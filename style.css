@@ -1,5 +1,6 @@
 body {
   background-color: #6c9a80;
+  color: #fffff;
 }
 
 h1 {
@@ -9,4 +10,8 @@ h1 {
 
 h2 {
   color: #42654d;
+}
+
+a {
+  color: #b5c5b6;
 }
