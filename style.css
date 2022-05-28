@@ -1,17 +1,17 @@
 body {
-  background-color: #6c9a80;
+  background-color: #fdfbf8;
   color: #ffffff;
 }
 
 h1 {
-  color: #0c4532;
+  color: #53347a;
   align: center;
 }
 
-h2, h3, h4 {
-  color: #42654d;
+h2, h3, h4, h5 {
+  color: #634c81;
 }
 
 a {
-  color: #b5c5b6;
+  color: #be8bc1;
 }
