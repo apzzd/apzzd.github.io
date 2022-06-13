@@ -2,7 +2,7 @@ body {
   background-color: #fff9ef;
   color: #321854;
   margin-right: 100px;
-  margin-left: 20px;
+  margin-left: 0px;
 }
 
 h1 {
@@ -22,3 +22,9 @@ img {
   align: left;
   margin-left: 0px;
 }
+
+
+p, h1, h2, h3, h4, h5, a {
+    margin-left: 10px;
+}
+
