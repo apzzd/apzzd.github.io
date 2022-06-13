@@ -1,7 +1,8 @@
 body {
   background-color: #fff9ef;
   color: #321854;
-  margin-right: 50px;
+  margin-right: 100px;
+  margin-left: 20px;
 }
 
 h1 {
@@ -19,4 +20,5 @@ a {
 
 img {
   align: left;
+  margin-left: 0px;
 }
