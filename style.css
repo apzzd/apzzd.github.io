@@ -37,6 +37,9 @@ h2, h3, h4, h5 {
 
 a {
   color: #be8bc1;
+  font-family: Arial, sans-serif;
+  margin-right: 100px;
+  margin-left: 10px;
 }
 
 img {
@@ -45,7 +48,7 @@ img {
 }
 
 
-p, h1, h2, h3, h4, h5, a {
+p, h1, h2, h3, h4, h5 {
     font-family: Arial, sans-serif;
     margin-right: 100px;
     margin-left: 10px;
