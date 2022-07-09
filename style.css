@@ -19,6 +19,11 @@
   color: #ffffff;
 }
 
+.topnav-selected {
+  background-color: #321854;
+  color: #ffffff;
+}
+
 body {
   background-color: #fff9ef;
   color: #321854;
