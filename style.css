@@ -1,66 +1,64 @@
 .topnav {
-  overflow: hidden;
-  background-color: #494949;
-  margin-left: 0px;
-  margin-right: 0px;
-}
+   overflow: hidden;
+   background-color: #494949;
+   margin-left: 0px;
+   margin-right: 0px;
+ }
 
-.topnav a {
-  float: left;
-  display: block;
-  color: #30E641;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
+ .topnav a {
+   float: left;
+   display: block;
+   color: #30E641;
+   text-align: center;
+   padding: 14px 16px;
+   text-decoration: none;
+ }
 
-.topnav a:hover {
-  background-color: #595959;
-  color: #30E641;
-}
+ .topnav a:hover {
+   background-color: #595959;
+   color: #30E641;
+ }
 
-.selectedLink {
-  background-color: #595959;
-  color: #30E641;
-}
+ .selectedLink {
+   background-color: #595959;
+   color: #30E641;
+ }
 
-body {
-  background-color: #000000;
-  color: #595959;
-  margin-right: 0px;
-  margin-left: 0px;
-}
+ body {
+   background-color: #000000;
+   color: #595959;
+   margin-right: 0px;
+   margin-left: 0px;
+ }
 
-h1 {
-  color: #2bcf3a;
-  align: center;
-}
+ h1 {
+   color: #2bcf3a;
+   align: center;
+ }
 
-h2, h3, h4, h5 {
-  color: #26b834;
-}
+ h2, h3, h4, h5 {
+   color: #26b834;
+ }
 
-#normal a {
-  color: #6eed7a;
-  font-family:  Consolas, Courier New;
-  margin-right: 100px;
-  margin-left: 10px;
-}
+ #normal a {
+   color: #6eed7a;
+   font-family:  Consolas, Courier New;
+   margin-right: 100px;
+   margin-left: 10px;
+ }
 
-a {
-  color: #6eed7a;
-  font-family: Consolas, Courier New;
-}
+ a {
+   color: #6eed7a;
+   font-family: Consolas, Courier New;
+ }
 
-img {
-  align: left;
-  margin-left: 0px;
-}
+ img {
+ @@ -59,7 +59,7 @@ img {
 
 
-p, h1, h2, h3, h4, h5 {
-    font-family: Consolas, Courier New;
-    margin-right: 100px;
-    margin-left: 10px;
-}
+ p, h1, h2, h3, h4, h5 {
+     font-family: Consolas, Courier New;
+     margin-right: 100px;
+     margin-left: 10px;
+ }
 
