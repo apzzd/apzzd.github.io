@@ -1,6 +1,6 @@
 .topnav {
   overflow: hidden;
-  background-color: #8d629c;
+  background-color: #494949;
   margin-left: 0px;
   margin-right: 0px;
 }
@@ -8,48 +8,48 @@
 .topnav a {
   float: left;
   display: block;
-  color: #ffffff;
+  color: #30E641;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
 }
 
 .topnav a:hover {
-  background-color: #be8bc1;
-  color: #ffffff;
+  background-color: #595959;
+  color: #30E641;
 }
 
 .selectedLink {
-  background-color: #321854;
-  color: #ffffff;
+  background-color: #595959;
+  color: #30E641;
 }
 
 body {
-  background-color: #fff9ef;
-  color: #321854;
+  background-color: #000000;
+  color: #595959;
   margin-right: 0px;
   margin-left: 0px;
 }
 
 h1 {
-  color: #53347a;
+  color: #2bcf3a;
   align: center;
 }
 
 h2, h3, h4, h5 {
-  color: #634c81;
+  color: #26b834;
 }
 
 #normal a {
-  color: #be8bc1;
-  font-family: Arial, sans-serif;
+  color: #6eed7a;
+  font-family:  Consolas, Courier New;
   margin-right: 100px;
   margin-left: 10px;
 }
 
 a {
-  color: #be8bc1;
-  font-family: Arial, sans-serif;
+  color: #6eed7a;
+  font-family: Consolas, Courier New;
 }
 
 img {
@@ -59,7 +59,7 @@ img {
 
 
 p, h1, h2, h3, h4, h5 {
-    font-family: Arial, sans-serif;
+    font-family: Consolas, Courier New;
     margin-right: 100px;
     margin-left: 10px;
 }
