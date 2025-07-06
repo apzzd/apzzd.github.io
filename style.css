@@ -22,6 +22,12 @@ a.title {
 .post-link-head {
 	color: white;
 	font-weight: bold;
+	text-decoration: none;
+ }
+ 
+.post-link-head:hover {
+	color: #6666ff;
+	font-weight: bold;
  }
  
  .post-link-descrip {
@@ -31,9 +37,12 @@ a.title {
 
  .post-link-div {
 	 padding: 20px;
-	 border: 5px solid #bbbbbb;
 	 display: block;
-	 margin: 10px;
+ }
+ .post-link-div:hover {
+	 padding: 20px;
+	 display: block;
+	 background-color: #444444;
  }
  
  .home-link {
