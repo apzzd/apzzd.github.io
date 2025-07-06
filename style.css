@@ -16,12 +16,21 @@ a.title {
     color: black;
 }
 
-.post-link {
-    padding: 20px;
+.post-link-head {
+    color: black;
+   	font-weight: bold;
+ }
+ 
+ .post-link-descrip {
+ 	font-style: italic;
+    color: #bbbbbb;
+ }
+
+ .post-link-div {
+	padding: 20px;
     border: 5px solid #bbbbbb;
     display: block;
  	margin: 10px;
-    color: black;
  }
 
 .post-list {  
@@ -30,5 +39,5 @@ a.title {
 }
 
 .post-body {
-    padding: 5px;
+	
 }
