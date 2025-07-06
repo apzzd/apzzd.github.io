@@ -1,7 +1,7 @@
 body {
-	font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 	padding: 20px;
-	background-color: #dddddd;
+	background-color: #333333;
+	color: white;
 }
 
 img {
@@ -13,11 +13,11 @@ a.title {
 	font-size: xx-large;
 	font-weight: bolder;
 	text-decoration: none;
-	color: black;
+	color: white;
 }
 
 .post-link-head {
-	color: black;
+	color: white;
 	font-weight: bold;
  }
  
