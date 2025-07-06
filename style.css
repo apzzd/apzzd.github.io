@@ -20,6 +20,8 @@ a.title {
     padding: 20px;
     border: 5px solid #bbbbbb;
     display: block;
+ 	margin: 10px;
+    color: black;
  }
 
 .post-list {  
