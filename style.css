@@ -12,6 +12,14 @@ img {
         margin-right: auto;
 }
 
+a {
+	color: white;
+}
+
+a:hover {
+	color: #6666ff;
+}
+
 a.title {
 	font-size: xx-large;
 	font-weight: bolder;
