@@ -32,6 +32,10 @@ a.title {
 	 display: block;
 	 margin: 10px;
  }
+ 
+ .home-link {
+     color: #bbbbbb;
+ }
 
 .post-list {  
 	padding-top: 20px;
