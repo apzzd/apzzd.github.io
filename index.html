@@ -2,26 +2,41 @@
 <html>
  <head>
    <link rel="stylesheet" type="text/css" href="style.css">
+  <script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"> 
+</script> <!-- using MathJax -->
+<script>
+    MathJax = {
+     tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+    }
+    };
+</script>
  </head>
  
-<title>Ada's Blog</title>
+<title>ada's blog</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <body>
 
   <header> <!-- general website header -->
-    <a href="./" class="title">Ada's Blog</a>
+    <a href="./" class="title">ada's blog</a>
   </header>
 
   <div> <!-- decription -->
-    <p>Posts about math, projects, niche interests, etc.</p>
-    <p>Check out my <a href="https://github.com/apzzd">Github</a> and <a href="https://artofproblemsolving.com/community/user/600906">Art of Problem Solving</a> accounts, too.</p>
+    <p>posts about math, projects, niche interests, etc.</p>
+    <p>check out my <a href="https://github.com/apzzd">Github</a> and <a href="https://artofproblemsolving.com/community/user/600906">Art of Problem Solving</a> accounts, too.</p>
   </div>
 
   <div class="post-list"> <!-- list of posts -->
+
+   <div class="post-link-div"> <!-- a post link, with description -->
+    	<a href="./posts/reciprocals-and-zn-7-26-2025.html" class="post-link-head">reciprocals and $\mathbb{Z}_n$ (part I)</a>
+        <p class="post-link-descrip">things get weird when finite sets are closed under addition</p>
+    </div>
    
     <div class="post-link-div"> <!-- a post link, with description -->
-    	<a href="./posts/domino-problem-7-6-2025.html" class="post-link-head">Arranging Dominos</a>
+    	<a href="./posts/domino-problem-7-6-2025.html" class="post-link-head">arranging dominos</a>
         <p class="post-link-descrip">how many ways can you arrange some dominos on a rectangle, and what does that have to do with fibonacci numbers?</p>
     </div>
    

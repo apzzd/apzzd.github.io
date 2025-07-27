@@ -1,3 +1,3 @@
 # apzzd.github.io
 
-... in progress ...
+now posting about math and maybe also some other things :)
