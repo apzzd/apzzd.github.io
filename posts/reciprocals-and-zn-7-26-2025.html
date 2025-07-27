@@ -29,8 +29,71 @@
 
   <div class="post-body"> <!-- body of text -->
     
-    <!-- put content here :) -->
-    
+    Recently I’ve been messing around with the modulus operator and systems of numbers modulus $n$. If you’re used to dealing with the set of “normal” integers when doing calculations (like I am), this can be pretty counterintuitive. I’ll use quite a bit of set notation in this post, so be warned.
+
+   <br><br>
+
+   So, a set of numbers $\mathbb{Z}_n$ is the set of all possible remainders you could get when dividing an integer by $n$. For example, $\mathbb{Z}_3 = \{0, 1, 2\}$. You can’t get a remainder greater than $2$ when dividing by $3$.
+
+   <br><br>
+
+   Just like with any set of integers, you can add and multiply the members of this set - but this is where things get weird. $\mathbb{Z}_n$ has a finite number of elements, $n$, but it’s still closed under addition, subtraction, and multiplication like $\mathbb{Z}$ is. This means that if you’re doing arithmetic within $\mathbb{Z}_3$, you could say something like this,
+
+   $$2 + 2 = 1$$
+
+   or this,
+
+   $$2 \cdot 2 \cdot 2 = 2$$
+
+   which can be a little confusing.
+
+   <br><br>
+
+   On to reciprocals. When working with the “normal” number systems that most people are used to, we’d say that $\frac{1}{x}$ is the reciprocal of $x$, because $\frac{1}{x} \cdot x = 1$. The only integers that are their own reciprocals are $1$ and $-1$. So, we can reason that no member of $\mathbb{Z}$ besides $1$ and $-1$ has a reciprocal that’s also a member of $\mathbb{Z}$, because for an integer $x \neq 1, -1$, $\frac{1}{x}$ isn’t an integer. (More concisely, $\forall a \neq 1,-1 \in \mathbb{Z}, \nexists b \in \mathbb{Z} \ s.t. \ ab = 1$)
+
+   <br><br>
+   
+   But this isn’t true for $\mathbb{Z}_n$!
+
+   <br><br>
+
+   Let’s look at the system $\mathbb{Z}_3$ again. Here, $2 \cdot 2 = 1$, because $(2 \cdot 2) \equiv 1 \ \mod \ 3$. So, $2$ is its own reciprocal in $\mathbb{Z}_3$. Weird, right? 
+
+   <br><br>
+
+   At this point, we might wonder when a number in a system $\mathbb{Z}_n$ has a reciprocal. To try to find this out, we’ll have to jump between the $\mathbb{Z}_n$ and $\mathbb{Z}$ representations of a number a few times. 
+
+   <br><br>
+
+   Say we have two numbers $a, b \in \mathbb{Z}_n$, such that $ab = 1$ in $\mathbb{Z}_n$. This means that in $\mathbb{Z}$, $ab = 1 + nx$, where $x \in \mathbb{Z}$. Now, we can say that $ab - nx = 1$. 
+
+   <br><br>
+
+   The difference or sum of two terms is always a multiple of the greatest common divisor of the two terms - we can factor the greatest common divisor out of the numbers we’re adding or subtracting, so the result will also be a multiple of the greatest common divisor.
+
+   <br><br>
+   
+   So, in the context of $a$, $b$, and $n$, we know that $\gcd(ab, n) = 1$, $\gcd(a, n) = 1$, and $\gcd(b, n) = 1$ if $a$ and $b$ are reciprocals within $\mathbb{Z}_n$. Notice that it doesn’t necessarily follow that for every $a \in \mathbb{Z}_n$ such that $\gcd(a, n) = 1$, $a$ **must** have some reciprocal $b \in \mathbb{Z}_n$! We’ve only proven that it **could**. 
+   
+$$(a,b \in \mathbb{Z}_n \ \text{and} \ ab = 1) \Longrightarrow \gcd(a, n) = 1$$
+
+   <br><br>
+   
+   Now, we can try to show that $a$ **must** have some reciprocal $b \in \mathbb{Z}_n$. We’re assuming that $\gcd(a, n) = 1$, and want to show that there must exist $b \in \mathbb{Z}_n$ such that $ab = 1$ in $\mathbb{Z}_n$ ($ab \equiv 1 \ \mod \ n$ in $\mathbb{Z}$).
+
+   <br><br>
+
+   So, because $a$ and $n$ are relatively prime and have no common divisors besides $1$, we say that $ab \equiv x \ \mod \ n$, and $x \neq 0$, where $b \in \mathbb{Z}_n$. Let $R$ be the set of values of $x$ as $b$ ranges over $\mathbb{Z}_n$. No two elements in $R$ can be equal, because given $ab$ with some corresponding remainder $x$, adding any multiple of $a$ such that the total value is less than $an$ must change the remainder. Note that the total value must be less than $an$ because $an$ is the least common multiple of $a$ and $n$. Finally, we can use the pigeonhole principle here to say that because all the remainders are different values between $1$ and $n-1$, and there are $n-1$ remainders, there must be a value of $b$ such that the remainder is $1$.
+
+$$(a,b \in \mathbb{Z}_n \ \text{and} \ ab = 1) \Longleftrightarrow \gcd(a, n) = 1$$
+
+   <br><br>
+   
+   So, we’ve found a way to determine if a number $a \in \mathbb{Z}_n$ has a reciprocal - check if $\gcd(a, n) = 1$.
+
+   <br><br>
+
+   In part II, I’ll attempt to explain how to find a reciprocal for a given number in $\mathbb{Z}_n$. :)   
     
   </div>
   
