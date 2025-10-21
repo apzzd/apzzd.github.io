@@ -35,28 +35,27 @@
     Anyway, here we go...
     <br><br>
     <h2>the “vector conversion” strategy</h2>
-    <br><br>
     Say we have the set $\mathbb{Z}_n$ where $n$ isn’t prime. We can split up $n$ into $2$ or more factors: say we have just $2$, $a$ and $b$. Then we can represent a number $x$ in $\mathbb{Z}_n$ as a vector:
     <br><br>
-    $$\langle x \mod a, x \mod b \rangle$$
+    $$\langle x \bmod a, x \bmod b \rangle$$
     <br><br>
     This is the same as:
     <br><br>
-    $$\langle x \mod a, 0 \rangle + \langle 0, x \mod b \rangle$$
+    $$\langle x \bmod a, 0 \rangle + \langle 0, x \mod b \rangle$$
     <br><br>
     The first component of the vector is in $\mathbb{Z}_a$, and the second is in $\mathbb{Z}_b$.
     <br><br>
-    Now we have a slightly simpler problem - we need to find a vector to multiply each term by in order to end up with $\langle 1 , 0 \rangle$ and $\langle 0 , 1 \rangle$, respectively. To do this, we just need to find the reciprocals of $x \mod a$ and $x \mod b$. Once we’ve done that, we add those vectors to get a new vector,
+    Now we have a slightly simpler problem - we need to find a vector to multiply each term by in order to end up with $\langle 1 , 0 \rangle$ and $\langle 0 , 1 \rangle$, respectively. To do this, we just need to find the reciprocals of $x \bmod a$ and $x \bmod b$. Once we’ve done that, we add those vectors to get a new vector,
     <br><br>
     $$\langle c , d \rangle,$$
     <br><br>
-    where $c$ is the reciprocal of $x \mod a$ in $\mathbb{Z}_a$, and $d$ is the reciprocal of $x \mod b$ in $\mathbb{Z}_b$.
+    where $c$ is the reciprocal of $x \bmod a$ in $\mathbb{Z}_a$, and $d$ is the reciprocal of $x \bmod b$ in $\mathbb{Z}_b$.
     <br><br>
     Note that when we’re multiplying vectors with this strategy, we’re multiplying them component-wise.
     <br><br>
-    Now, we just need to convert $\langle c , d \rangle$ back into a number in $\mathbb{Z}_n$. We’ve got to reverse the operation we did in order to convert a number into a vector - so, we need to find some number $x_2$ such that $x_2 \equiv c \mod a$ and $x_2 \equiv d \mod b$.
+    Now, we just need to convert $\langle c , d \rangle$ back into a number in $\mathbb{Z}_n$. We’ve got to reverse the operation we did in order to convert a number into a vector - so, we need to find some number $x_2$ such that $x_2 \equiv c \bmod a$ and $x_2 \equiv d \bmod b$.
     <br><br>
-    If we’re trying to find lots of reciprocals in $\mathbb{Z}_n$ using this process, it’d be worth our time to simplify the problem further. Instead of trying to convert back into $\mathbb{Z}_n$ for every single possible vector $\langle c , d \rangle$, we can convert the unit vectors $\langle 1 , 0 \rangle$ and $$\langle 0 , 1 \rangle$$ instead, and add multiples of them. In this case, we’d find this:
+    If we’re trying to find lots of reciprocals in $\mathbb{Z}_n$ using this process, it’d be worth our time to simplify the problem further. Instead of trying to convert back into $\mathbb{Z}_n$ for every single possible vector $\langle c , d \rangle$, we can convert the unit vectors $\langle 1 , 0 \rangle$ and $\langle 0 , 1 \rangle$ instead, and add multiples of them. In this case, we’d find this:
     <br><br>
     $$c \langle 1 , 0 \rangle + d \langle 0 , 1 \rangle$$
     <br><br>
@@ -68,7 +67,7 @@
     <br><br>
     We start by converting this number to a vector, where the first component is in $\mathbb{Z}_{13}$ and the second is in $\mathbb{Z}_4$ (because $13 \times 4 = 52$):
     <br><br>
-    $$5 \rightarrow \langle 5 \mod 13 , 5 \mod 4 \rangle = \langle 5 , 1 \rangle$$
+    $$5 \rightarrow \langle 5 \bmod 13 , 5 \bmod 4 \rangle = \langle 5 , 1 \rangle$$
     <br><br>
     Next, we find the reciprocal of this vector:
     <br><br>
@@ -77,20 +76,19 @@
     Now we can convert $\langle 1 , 0 \rangle$ and $\langle 0 , 1 \rangle$ to numbers in $\mathbb{Z}_{52}$... with a bit of calculation, we find that $\langle 1 , 0 \rangle \rightarrow 14$ and $\langle 0 , 1 \rangle \rightarrow 13$.
     <br><br>
     Finally, we can convert the reciprocal in vector form into a number in $\mathbb{Z}_{52}$:
-    $\langle 8 , 1 \rangle = 8 \langle 1 , 0 \rangle + 1 \langle 0 , 1 \rangle \rightarrow (8 \times 14 + 1 \times 13) \mod 52 = 21$
+    $\langle 8 , 1 \rangle = 8 \langle 1 , 0 \rangle + 1 \langle 0 , 1 \rangle \rightarrow (8 \times 14 + 1 \times 13) \bmod 52 = 21$
     <br><br>
     We can check our answer very quickly:
     $$21 \times 5 = 105 = (2 \times 52) + 1$$
     <br><br>
     <h2>the “powers of x” strategy</h2>
-    <br><br>
     Another strategy I found works for prime values of $n$ and is much simpler, but also much less reliable. 
     <br><br>
-    Given a system $\mathbb{Z}_n$, find the smallest possible power $p$ such that $x^p \equiv 1 \mod n$. If you write out a list of powers of $x \mod n$, you should see every possible remainder exactly once before you reach $x^p$.
+    Given a system $\mathbb{Z}_n$, find the smallest possible power $p$ such that $x^p \equiv 1 \mod n$. If you write out a list of powers of $x \bmod n$, you should see every possible remainder exactly once before you reach $x^p$.
     <br><br>
-    Now, you just have to “group” the powers in your list into pairs, such that the product of the powers of $x$ is $x^p$. The numbers that they’re congruent to $\mod n$ are reciprocals.
+    Now, you just have to “group” the powers in your list into pairs, such that the product of the powers of $x$ is $x^p$. The numbers that they’re congruent to $\bmod n$ are reciprocals.
     <br><br>
-    Now, this strategy is unreliable because one value of $x$ doesn’t work for all prime values of $n$ - if a list of powers of $x \mod n$ doesn’t include all possible remainders exactly once, it won’t work. 
+    Now, this strategy is unreliable because one value of $x$ doesn’t work for all prime values of $n$ - if a list of powers of $x \bmod n$ doesn’t include all possible remainders exactly once, it won’t work. 
     <br><br>
     <hr>
     <br><br>

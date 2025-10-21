@@ -1,11 +1,8 @@
 body {
-	padding-top: 10px;
-	padding-left: 20px;
-	padding-right: 20px;
-	padding-bottom: 20px;
+	padding: 20px;
 	background-color: #333333;
 	color: white;
-	margin-top: 1%;
+    margin-top: 2%;
 	margin-left: 5%;
 	margin-right: 5%;
 }
