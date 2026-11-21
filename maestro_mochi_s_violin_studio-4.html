@@ -1,0 +1,3917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maestro Mochi's Violin Studio</title>
+  <style>
+    /* ==========================================================================
+       DESIGN TOKENS: WARM LUTHIER SPRUCE, MAHOGANY, EBONY & KAWAII PASTELS
+       ========================================================================== */
+    :root {
+      --wood-dark: #2B160C;
+      --wood-mahogany: #4A2311;
+      --wood-amber: #8C4419;
+      --wood-spruce: #C97A36;
+      --purfling-gold: #E5B95C;
+      --parchment: #FFF9EF;
+      --parchment-card: #FFFDF8;
+      --ink-dark: #2D1E17;
+      --ink-muted: #705547;
+      --ebony: #1B1615;
+      --ivory: #F5ECD8;
+      --kawaii-pink: #F48FB1;
+      --kawaii-berry: #D84367;
+      --kawaii-pink-soft: #FCE4EC;
+      --kawaii-mint: #2E9E6B;
+      --kawaii-mint-soft: #E3F7ED;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-sans);
+      color: var(--ink-dark);
+      background:
+        radial-gradient(circle at 18% 12%, rgba(229, 185, 92, 0.22), transparent 45%),
+        radial-gradient(circle at 82% 88%, rgba(244, 143, 177, 0.18), transparent 48%),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.02) 0px,
+          rgba(255, 255, 255, 0.02) 2px,
+          transparent 2px,
+          transparent 10px
+        ),
+        linear-gradient(155deg, var(--wood-dark) 0%, var(--wood-mahogany) 52%, #24120A 100%);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 16px 12px 32px;
+    }
+
+    /* ==========================================================================
+       MAIN VIOLIN STUDIO SHELL (GOLD PURFLING BORDER + PARCHMENT BODY)
+       ========================================================================== */
+    .studio-shell {
+      width: 100%;
+      max-width: 840px;
+      background: var(--parchment);
+      border: 3px solid var(--purfling-gold);
+      border-radius: var(--radius-lg);
+      box-shadow:
+        0 0 0 4px var(--wood-dark),
+        0 0 0 6px rgba(229, 185, 92, 0.45),
+        0 24px 60px rgba(0, 0, 0, 0.55);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Decorative subtle carved violin f-holes in background */
+    .f-hole-bg {
+      position: absolute;
+      top: 170px;
+      width: 54px;
+      height: 220px;
+      opacity: 0.055;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .f-hole-bg.left { left: 14px; }
+    .f-hole-bg.right { right: 14px; transform: scaleX(-1); }
+
+    /* ==========================================================================
+       TOP HEADER BAR
+       ========================================================================== */
+    .top-bar {
+      background: linear-gradient(135deg, var(--wood-mahogany), #33170B);
+      color: var(--parchment);
+      padding: 14px 20px;
+      border-bottom: 2px solid var(--purfling-gold);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--wood-spruce), var(--wood-amber));
+      border: 2px solid var(--purfling-gold);
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    }
+
+    .brand-title {
+      font-size: 1.12rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: #FFF7E6;
+    }
+
+    .brand-subtitle {
+      font-size: 0.72rem;
+      color: var(--purfling-gold);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .hud-cluster {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hud-pill {
+      background: rgba(255, 249, 239, 0.12);
+      border: 1px solid rgba(229, 185, 92, 0.45);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #FFF7E6;
+    }
+
+    .hud-pill span.val {
+      color: var(--purfling-gold);
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+    }
+
+    .round-dots {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .round-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1.5px solid rgba(229, 185, 92, 0.6);
+      transition: all 0.2s ease;
+    }
+
+    .round-dot.active {
+      background: var(--kawaii-pink);
+      border-color: #FFF;
+      transform: scale(1.2);
+    }
+
+    .round-dot.perfect { background: #34D399; border-color: #FFF; }
+    .round-dot.good { background: #FBBF24; border-color: #FFF; }
+    .round-dot.miss { background: #F87171; border-color: #FFF; }
+
+    /* ==========================================================================
+       MAESTRO MOCHI STAGE (KAWAII BUNNY INSTRUCTOR + SPEECH BUBBLE)
+       ========================================================================== */
+    .maestro-stage {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 20px;
+      background: linear-gradient(180deg, #FFF4E2 0%, var(--parchment) 100%);
+      border-bottom: 1.5px dashed rgba(140, 68, 25, 0.25);
+      position: relative;
+      z-index: 2;
+    }
+
+    .mochi-avatar-box {
+      flex-shrink: 0;
+      width: 108px;
+      height: 108px;
+      background: radial-gradient(circle at 50% 45%, #FFFDF9, #F9E5C9);
+      border: 2.5px solid var(--purfling-gold);
+      border-radius: 50%;
+      box-shadow: 0 6px 16px rgba(74, 35, 17, 0.16);
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mochi-svg {
+      width: 98px;
+      height: 98px;
+      overflow: visible;
+    }
+
+    @keyframes earTwitch {
+      0%, 88%, 100% { transform: rotate(0deg); }
+      92% { transform: rotate(-6deg); }
+      96% { transform: rotate(3deg); }
+    }
+
+    @keyframes bunnyBounce {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-3px); }
+    }
+
+    @keyframes bowSaw {
+      0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+      50% { transform: translate(8px, -3px) rotate(-4deg); }
+    }
+
+    @keyframes eyeBlink {
+      0%, 94%, 100% { transform: scaleY(1); }
+      97% { transform: scaleY(0.1); }
+    }
+
+    .mochi-body-group {
+      animation: bunnyBounce 2.8s ease-in-out infinite;
+    }
+
+    .mochi-ear-right {
+      transform-origin: 62px 34px;
+      animation: earTwitch 4.5s ease-in-out infinite;
+    }
+
+    .mochi-eyes {
+      transform-origin: 50px 52px;
+      animation: eyeBlink 4.2s infinite;
+    }
+
+    .mochi-bow-arm.playing {
+      animation: bowSaw 0.42s ease-in-out infinite;
+    }
+
+    .speech-bubble {
+      flex: 1;
+      background: var(--parchment-card);
+      border: 2px solid #E6C79C;
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      position: relative;
+      box-shadow: 0 4px 12px rgba(74, 35, 17, 0.08);
+    }
+
+    .speech-bubble::before {
+      content: "";
+      position: absolute;
+      left: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 9px 10px 9px 0;
+      border-style: solid;
+      border-color: transparent #E6C79C transparent transparent;
+    }
+
+    .speech-bubble::after {
+      content: "";
+      position: absolute;
+      left: -7px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 7px 8px 7px 0;
+      border-style: solid;
+      border-color: transparent var(--parchment-card) transparent transparent;
+    }
+
+    .speech-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .mochi-name-tag {
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--kawaii-berry);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .speech-text {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.42;
+      color: var(--ink-dark);
+      font-weight: 500;
+    }
+
+    /* ==========================================================================
+       MAIN STUDIO WORKSPACE
+       ========================================================================== */
+    .studio-body {
+      padding: 16px 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .controls-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .mode-tabs {
+      display: inline-flex;
+      background: #EFE3CE;
+      padding: 4px;
+      border-radius: 12px;
+      border: 1.5px solid #D8C09B;
+      gap: 4px;
+    }
+
+    .mode-tab {
+      border: none;
+      background: transparent;
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-family: var(--font-sans);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--ink-muted);
+      cursor: pointer;
+      transition: all 0.16s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mode-tab:hover {
+      color: var(--ink-dark);
+      background: rgba(255, 255, 255, 0.45);
+    }
+
+    .mode-tab.active {
+      background: linear-gradient(135deg, var(--wood-mahogany), var(--wood-amber));
+      color: #FFF9EF;
+      box-shadow: 0 3px 8px rgba(74, 35, 17, 0.25);
+    }
+
+    .toggle-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .btn {
+      border: 1.5px solid #D2B48C;
+      background: var(--parchment-card);
+      color: var(--ink-dark);
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 7px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.14s ease;
+      box-shadow: 0 2px 5px rgba(74, 35, 17, 0.06);
+    }
+
+    .btn:hover {
+      border-color: var(--wood-amber);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0px);
+    }
+
+    .btn.active-toggle {
+      background: var(--kawaii-mint-soft);
+      border-color: var(--kawaii-mint);
+      color: #176642;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--kawaii-berry), #B82E50);
+      border-color: #9E2240;
+      color: #FFF;
+      font-size: 0.9rem;
+      padding: 10px 18px;
+      box-shadow: 0 4px 12px rgba(216, 67, 103, 0.3);
+    }
+
+    .btn-primary:hover {
+      border-color: #7D1831;
+      filter: brightness(1.06);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--wood-spruce), var(--wood-amber));
+      border-color: var(--wood-mahogany);
+      color: #FFF9EF;
+      font-size: 0.9rem;
+      padding: 10px 18px;
+    }
+
+    /* Prompt Card */
+    .prompt-card {
+      background: var(--parchment-card);
+      border: 2px solid #E5C89B;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .prompt-kicker {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--wood-amber);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .prompt-title {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--ink-dark);
+    }
+
+    .prompt-sub {
+      margin: 4px 0 0;
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+    }
+
+    /* ==========================================================================
+       ACOUSTIC WAVEFORM & RESONANCE CANVAS
+       ========================================================================== */
+    .visualizer-box {
+      position: relative;
+      height: 112px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #3D1D0E 0%, #5E2D15 50%, #36190B 100%);
+      border: 2px solid var(--purfling-gold);
+      overflow: hidden;
+      box-shadow: inset 0 4px 16px rgba(0, 0, 0, 0.45);
+    }
+
+    #studioCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .canvas-badge {
+      position: absolute;
+      top: 9px;
+      left: 12px;
+      background: rgba(27, 22, 21, 0.78);
+      border: 1px solid rgba(229, 185, 92, 0.5);
+      color: #FFF7E6;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .canvas-action {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+    }
+
+    /* ==========================================================================
+       EBONY 4-STRING FIRST-POSITION VIOLIN FINGERBOARD
+       ========================================================================== */
+    .fingerboard-wrapper {
+      position: relative;
+      background: linear-gradient(180deg, #181413 0%, #27201E 50%, #151110 100%);
+      border: 2.5px solid #4A372E;
+      border-left: 10px solid var(--ivory); /* Ivory Violin Nut */
+      border-radius: var(--radius-md);
+      padding: 20px 22px 28px 28px;
+      box-shadow: inset 0 4px 18px rgba(0, 0, 0, 0.75), 0 8px 18px rgba(45, 30, 23, 0.16);
+      touch-action: none;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .nut-tag {
+      position: absolute;
+      left: 3px;
+      top: 6px;
+      font-size: 9px;
+      font-weight: 800;
+      color: #9E8A72;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      letter-spacing: 0.08em;
+      pointer-events: none;
+    }
+
+    .fingerboard-grid {
+      position: relative;
+      height: 136px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .string-lane {
+      position: relative;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .string-label {
+      position: absolute;
+      left: -21px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 900;
+      color: #E7D5B8;
+      pointer-events: none;
+      transition: all 0.15s ease;
+    }
+
+    .string-lane.active-string .string-label {
+      color: #FF9EBB;
+      transform: scale(1.18);
+    }
+
+    .string-lane.drone-string .string-label {
+      color: #6EE7B7;
+      transform: scale(1.12);
+    }
+
+    .string-wire {
+      width: 100%;
+      background: linear-gradient(90deg, #A99B8C, #FFF7E4, #B5A798);
+      border-radius: 2px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.65);
+      transition: box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    .string-lane.active-string .string-wire {
+      box-shadow: 0 0 11px rgba(244, 143, 177, 0.85);
+      filter: brightness(1.16);
+    }
+
+    .string-lane.drone-string .string-wire {
+      background: linear-gradient(90deg, #34D399, #D1FAE5, #34D399);
+      box-shadow: 0 0 11px rgba(52, 211, 153, 0.85);
+    }
+
+    /* Beginner 1st-Position Finger Tapes */
+    .finger-tapes {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .finger-tapes.hidden {
+      opacity: 0;
+    }
+
+    .tape-line {
+      position: absolute;
+      top: -6px;
+      bottom: -6px;
+      width: 3px;
+      background: rgba(255, 232, 179, 0.26);
+      border-radius: 2px;
+      transform: translateX(-50%);
+    }
+
+    .tape-line.low-tape {
+      background: rgba(244, 143, 177, 0.24);
+    }
+
+    .tape-line span {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      color: rgba(255, 245, 225, 0.78);
+      white-space: nowrap;
+    }
+
+    /* Optional Learner Guide Ghost Pin */
+    .guide-ghost-pin {
+      position: absolute;
+      top: 50%;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px dashed #FBBF24;
+      background: rgba(251, 191, 36, 0.16);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      display: none;
+      z-index: 2;
+    }
+
+    /* Target Reveal Pin after Lock-In */
+    .target-reveal-pin {
+      position: absolute;
+      top: 50%;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #10B981;
+      border: 2.5px solid #FFF;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.95);
+      pointer-events: none;
+      display: none;
+      z-index: 3;
+    }
+
+    /* Interactive Player Finger Node */
+    .finger-node {
+      position: absolute;
+      top: 50%;
+      left: 30%;
+      min-width: 38px;
+      height: 38px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 35% 35%, #FF9EBB, var(--kawaii-berry));
+      border: 2.5px solid #FFFDF9;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #FFF;
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.05;
+      z-index: 5;
+      transition: top 0.12s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.08s ease;
+    }
+
+    .finger-node.active-bow {
+      transform: translate(-50%, -50%) scale(1.13);
+      box-shadow: 0 0 0 7px rgba(244, 143, 177, 0.36), 0 4px 16px rgba(0, 0, 0, 0.75);
+    }
+
+    /* ==========================================================================
+       RHYTHM BOWING CADENCE ZONE (MODE 3)
+       ========================================================================== */
+    .rhythm-zone {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--parchment-card);
+      border: 2px solid #E5C89B;
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+
+    .bow-stroke-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .stroke-chip {
+      min-width: 68px;
+      padding: 8px 10px;
+      border-radius: 11px;
+      background: #F6EBDA;
+      border: 2px solid #D8BE98;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-weight: 800;
+      color: var(--ink-dark);
+      transition: all 0.12s ease;
+    }
+
+    .stroke-chip.demo-active {
+      background: #FEF3C7;
+      border-color: #F59E0B;
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+
+    .stroke-chip.user-hit {
+      background: var(--kawaii-mint-soft);
+      border-color: var(--kawaii-mint);
+      color: #166534;
+    }
+
+    .bow-tap-pad {
+      height: 84px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #FCE4EC 0%, #F8BBD0 100%);
+      border: 2.5px solid var(--kawaii-berry);
+      color: #881337;
+      font-size: 1rem;
+      font-weight: 800;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      touch-action: none;
+      box-shadow: 0 6px 16px rgba(216, 67, 103, 0.2);
+      transition: transform 0.06s ease, box-shadow 0.06s ease;
+    }
+
+    .bow-tap-pad.pressed {
+      transform: scale(0.985);
+      background: linear-gradient(135deg, #F48FB1 0%, #EC407A 100%);
+      color: #FFF;
+      box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.22);
+    }
+
+    /* ==========================================================================
+       ACTION BAR & ROUND FEEDBACK BANNER
+       ========================================================================== */
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .result-banner {
+      display: none;
+      background: var(--kawaii-mint-soft);
+      border: 2px solid var(--kawaii-mint);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .result-banner.visible {
+      display: flex;
+    }
+
+    .result-banner.warn {
+      background: var(--kawaii-pink-soft);
+      border-color: var(--kawaii-berry);
+    }
+
+    .result-points {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: 900;
+      padding: 6px 12px;
+      border-radius: 10px;
+      background: #FFF;
+      color: #166534;
+      border: 1.5px solid currentColor;
+    }
+
+    .result-banner.warn .result-points {
+      color: var(--kawaii-berry);
+    }
+
+    /* ==========================================================================
+       RECITAL SUMMARY MODAL
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(27, 15, 9, 0.72);
+      backdrop-filter: blur(4px);
+      display: none;
+      place-items: center;
+      padding: 16px;
+      z-index: 50;
+    }
+
+    .modal-backdrop.open {
+      display: grid;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--parchment);
+      border: 3px solid var(--purfling-gold);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .recital-scorecard-box {
+      background: #FFFDF8;
+      border: 2px dashed #D4AF37;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin: 14px 0;
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      white-space: pre-line;
+      color: var(--ink-dark);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ==========================================================================
+       RHYTHM PACK SELECTOR & DETAILED RECITAL REPORT SCREEN
+       ========================================================================== */
+    .rhythm-pack-bar {
+      display: none;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #F6EBDA;
+      border: 1.5px solid #D8C09B;
+      border-radius: 12px;
+      padding: 8px 12px;
+    }
+
+    .pack-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pack-pill {
+      border: 1.5px solid #C9AC82;
+      background: var(--parchment-card);
+      color: var(--ink-muted);
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 5px 11px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+
+    .pack-pill:hover {
+      border-color: var(--wood-amber);
+      color: var(--ink-dark);
+    }
+
+    .pack-pill.active {
+      background: var(--wood-mahogany);
+      border-color: var(--purfling-gold);
+      color: #FFF9EF;
+      box-shadow: 0 2px 6px rgba(74, 35, 17, 0.25);
+    }
+
+    .report-screen {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      background: var(--parchment-card);
+      border: 2px solid #E5C89B;
+      border-radius: var(--radius-md);
+      padding: 18px;
+    }
+
+    .report-screen.visible {
+      display: flex;
+    }
+
+    .report-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1.5px dashed #DEC298;
+    }
+
+    .report-summary-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .report-chip {
+      background: #F7ECDA;
+      border: 1.5px solid #D8BE98;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--ink-dark);
+    }
+
+    .report-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .report-item {
+      background: var(--parchment);
+      border: 1.5px solid #DFC59E;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .report-item-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .report-badge {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    .report-badge.perfect { background: var(--kawaii-mint-soft); color: #166534; border: 1px solid var(--kawaii-mint); }
+    .report-badge.good { background: #FEF3C7; color: #92400E; border: 1px solid #F59E0B; }
+    .report-badge.miss { background: var(--kawaii-pink-soft); color: var(--kawaii-berry); border: 1px solid var(--kawaii-berry); }
+
+    .report-compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .compare-box {
+      background: #FFFDF9;
+      border: 1px solid #E5CFAF;
+      border-radius: 9px;
+      padding: 8px 11px;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .compare-label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+      margin-bottom: 2px;
+    }
+
+    .report-tip {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+      font-style: italic;
+    }
+
+    /* ==========================================================================
+       REPERTOIRE SONG BUILDER (4TH TAB)
+       ========================================================================== */
+    .repertoire-zone {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .repertoire-zone.visible {
+      display: flex;
+    }
+
+    .song-select-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--parchment-card);
+      border: 1.5px solid #D8C09B;
+      border-radius: 12px;
+      padding: 10px 14px;
+    }
+
+    .song-select-dropdown {
+      font-family: var(--font-sans);
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--ink-dark);
+      background: var(--parchment);
+      border: 1.5px solid #C9AC82;
+      border-radius: 9px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+
+    .phrase-stepper {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .phrase-step-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      background: #EFE3CE;
+      border: 1.5px solid #D8C09B;
+      color: var(--ink-muted);
+    }
+
+    .phrase-step-pill.active {
+      background: var(--kawaii-berry);
+      border-color: #9E2240;
+      color: #FFF;
+    }
+
+    .phrase-step-pill.done {
+      background: var(--kawaii-mint-soft);
+      border-color: var(--kawaii-mint);
+      color: #166534;
+    }
+
+    .sheet-music-card {
+      background: #FFFDF8;
+      border: 2px solid #D8BE98;
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      box-shadow: inset 0 2px 8px rgba(74, 35, 17, 0.05);
+    }
+
+    .sheet-music-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--wood-amber);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .sheet-svg {
+      width: 100%;
+      height: 124px;
+      display: block;
+    }
+
+    .rep-finale-card {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      background: var(--parchment-card);
+      border: 2px solid var(--purfling-gold);
+      border-radius: var(--radius-md);
+      padding: 18px;
+    }
+
+    .rep-finale-card.visible {
+      display: flex;
+    }
+
+    .rep-playback-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    @media (max-width: 600px) {
+      .report-compare-grid {
+        grid-template-columns: 1fr;
+      }
+      .maestro-stage {
+        flex-direction: column;
+        text-align: center;
+      }
+      .speech-bubble::before,
+      .speech-bubble::after {
+        display: none;
+      }
+      .mochi-avatar-box {
+        width: 92px;
+        height: 92px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="studio-shell">
+    <!-- Decorative Carved Violin F-Holes -->
+    <svg class="f-hole-bg left" viewBox="0 0 60 220" fill="currentColor">
+      <path d="M36 14 C22 14, 14 28, 22 44 C28 56, 36 78, 26 110 C16 142, 12 178, 26 198 C36 212, 50 202, 44 186 C38 172, 26 176, 26 164 C26 144, 42 124, 44 106 L52 104 L44 98 C44 74, 30 52, 34 36 C36 28, 46 30, 46 22 C46 16, 41 14, 36 14 Z"/>
+    </svg>
+    <svg class="f-hole-bg right" viewBox="0 0 60 220" fill="currentColor">
+      <path d="M36 14 C22 14, 14 28, 22 44 C28 56, 36 78, 26 110 C16 142, 12 178, 26 198 C36 212, 50 202, 44 186 C38 172, 26 176, 26 164 C26 144, 42 124, 44 106 L52 104 L44 98 C44 74, 30 52, 34 36 C36 28, 46 30, 46 22 C46 16, 41 14, 36 14 Z"/>
+    </svg>
+
+    <!-- Top Studio Header -->
+    <header class="top-bar">
+      <div class="brand">
+        <div class="brand-icon">🎻</div>
+        <div>
+          <div class="brand-title">Maestro Mochi's Violin Studio</div>
+          <div class="brand-subtitle">Kawaii Conservatory • Ear &amp; Bowing Practice</div>
+        </div>
+      </div>
+
+      <div class="hud-cluster">
+        <div class="hud-pill" title="Recital Rounds">
+          <span>Recital</span>
+          <div class="round-dots" id="roundDots"></div>
+        </div>
+        <div class="hud-pill">
+          <span>Score</span>
+          <span class="val" id="scoreDisplay">0</span>
+        </div>
+        <div class="hud-pill">
+          <span>Streak</span>
+          <span class="val" id="streakDisplay">0</span>
+        </div>
+        <button class="btn" id="muteBtn" style="padding: 5px 10px; font-size: 0.78rem;" title="Mute or unmute violin and Maestro Mochi chirps">
+          🔊 Sound: ON
+        </button>
+      </div>
+    </header>
+
+    <!-- Maestro Mochi Bunny Instructor Stage -->
+    <section class="maestro-stage">
+      <div class="mochi-avatar-box">
+        <svg class="mochi-svg" viewBox="0 0 100 100" aria-label="Maestro Mochi the Bunny Violin Instructor">
+          <g class="mochi-body-group">
+            <!-- Left Ear -->
+            <g>
+              <ellipse cx="38" cy="22" rx="8" ry="20" transform="rotate(-10 38 22)" fill="#FFFDF9" stroke="#5C3D2E" stroke-width="2.2"/>
+              <ellipse cx="38" cy="23" rx="4.2" ry="14" transform="rotate(-10 38 23)" fill="#F8BBD0"/>
+            </g>
+            <!-- Right Ear (Twitches) -->
+            <g class="mochi-ear-right">
+              <ellipse cx="62" cy="22" rx="8" ry="20" transform="rotate(10 62 22)" fill="#FFFDF9" stroke="#5C3D2E" stroke-width="2.2"/>
+              <ellipse cx="62" cy="23" rx="4.2" ry="14" transform="rotate(10 62 23)" fill="#F8BBD0"/>
+            </g>
+
+            <!-- Bunny Head -->
+            <ellipse cx="50" cy="52" rx="25" ry="21" fill="#FFFDF9" stroke="#5C3D2E" stroke-width="2.3"/>
+
+            <!-- Rosy Cheeks -->
+            <ellipse cx="34" cy="56" rx="4.8" ry="3" fill="#F48FB1" opacity="0.65"/>
+            <ellipse cx="66" cy="56" rx="4.8" ry="3" fill="#F48FB1" opacity="0.65"/>
+
+            <!-- Expressive Eyes (Swap by Mood) -->
+            <g class="mochi-eyes" id="mochiEyesDefault">
+              <circle cx="40" cy="50" r="3.4" fill="#3E2723"/>
+              <circle cx="39" cy="48.8" r="1.2" fill="#FFF"/>
+              <circle cx="60" cy="50" r="3.4" fill="#3E2723"/>
+              <circle cx="59" cy="48.8" r="1.2" fill="#FFF"/>
+            </g>
+            <g id="mochiEyesHappy" style="display:none;">
+              <path d="M36 51 Q40 46 44 51" fill="none" stroke="#3E2723" stroke-width="2.4" stroke-linecap="round"/>
+              <path d="M56 51 Q60 46 64 51" fill="none" stroke="#3E2723" stroke-width="2.4" stroke-linecap="round"/>
+            </g>
+
+            <!-- Bunny Nose & Mouth -->
+            <polygon points="48,54 52,54 50,56.5" fill="#F48FB1"/>
+            <path d="M46 58 Q48 61 50 58 Q52 61 54 58" fill="none" stroke="#5C3D2E" stroke-width="1.8" stroke-linecap="round"/>
+
+            <!-- Bunny Shoulders & Concert Bow Tie -->
+            <path d="M32 72 Q50 67 68 72 L72 90 L28 90 Z" fill="#FFFDF9" stroke="#5C3D2E" stroke-width="2.2"/>
+            <polygon points="50,74 43,70 43,78" fill="#D84367"/>
+            <polygon points="50,74 57,70 57,78" fill="#D84367"/>
+            <circle cx="50" cy="74" r="2.2" fill="#E5B95C"/>
+
+            <!-- Miniature Violin -->
+            <g transform="translate(22, 66) rotate(-18)">
+              <ellipse cx="12" cy="10" rx="8" ry="6" fill="#C97A36" stroke="#4A2311" stroke-width="1.6"/>
+              <ellipse cx="22" cy="10" rx="6.5" ry="5" fill="#C97A36" stroke="#4A2311" stroke-width="1.6"/>
+              <rect x="27" y="8.5" width="16" height="3" rx="1" fill="#2B160C"/>
+              <circle cx="44" cy="10" r="2.2" fill="#8C4419"/>
+            </g>
+
+            <!-- Miniature Violin Bow -->
+            <g class="mochi-bow-arm" id="mochiBowArm">
+              <line x1="26" y1="84" x2="76" y2="68" stroke="#8C4419" stroke-width="2.2" stroke-linecap="round"/>
+              <line x1="28" y1="85.5" x2="74" y2="70" stroke="#FFF9EF" stroke-width="1.1"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="speech-bubble">
+        <div class="speech-header">
+          <span class="mochi-name-tag">🐰 Maestro Mochi</span>
+          <span id="moodBadge" style="font-size:0.72rem; font-weight:700; color:var(--ink-muted);">Ready to play ♪</span>
+        </div>
+        <p class="speech-text" id="mochiSpeech">
+          Welcome to Maestro Mochi's Violin Studio! Choose Tone, Harmony, or Rhythm, listen closely, and let's make your strings sing!
+        </p>
+      </div>
+    </section>
+
+    <!-- Main Interactive Workspace -->
+    <main class="studio-body">
+      <!-- Mode Switcher & Learner Toggles -->
+      <div class="controls-toolbar">
+        <div class="mode-tabs" role="tablist">
+          <button class="mode-tab active" data-mode="tone" role="tab">🎵 Tone</button>
+          <button class="mode-tab" data-mode="harmony" role="tab">🎶 Harmony</button>
+          <button class="mode-tab" data-mode="rhythm" role="tab">🎼 Rhythm</button>
+          <button class="mode-tab" data-mode="repertoire" role="tab">📜 Repertoire</button>
+        </div>
+
+        <div class="toggle-group" id="fingerboardToggles">
+          <button class="btn active-toggle" id="tapesToggleBtn" title="Toggle beginner 1st-position finger tapes">
+            Finger Tapes: ON
+          </button>
+          <button class="btn" id="guideDotToggleBtn" title="Show a target position hint dot on the string">
+            Guide Dot: OFF
+          </button>
+        </div>
+      </div>
+
+      <!-- Rhythm Song Difficulty Pack Selector (Visible in Rhythm Mode) -->
+      <div class="rhythm-pack-bar" id="rhythmPackBar">
+        <span style="font-size: 0.78rem; font-weight: 800; color: var(--wood-mahogany); text-transform: uppercase; letter-spacing: 0.04em;">
+          Repertoire Pack:
+        </span>
+        <div class="pack-pills" id="rhythmPackPills">
+          <button class="pack-pill active" data-pack="beginner">Beginner • Suzuki &amp; Folk</button>
+          <button class="pack-pill" data-pack="intermediate">Intermediate • Baroque Dances</button>
+          <button class="pack-pill" data-pack="advanced">Advanced • Romantic Showpieces</button>
+          <button class="pack-pill" data-pack="pro">Pro • Virtuoso Caprices</button>
+        </div>
+      </div>
+
+      <!-- Repertoire Song Builder Controls (Visible in Repertoire Mode) -->
+      <div class="repertoire-zone" id="repertoireZone">
+        <div class="song-select-row">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <label for="repSongSelect" style="font-size: 0.78rem; font-weight: 800; color: var(--wood-mahogany); text-transform: uppercase;">
+              Piece:
+            </label>
+            <select id="repSongSelect" class="song-select-dropdown"></select>
+          </div>
+          <div class="phrase-stepper" id="repPhraseStepper">
+            <span class="phrase-step-pill active" id="repStep0">Phrase 1</span>
+            <span class="phrase-step-pill" id="repStep1">Phrase 2</span>
+            <span class="phrase-step-pill" id="repStep2">Phrase 3</span>
+          </div>
+        </div>
+
+        <!-- Sheet Music Display -->
+        <div class="sheet-music-card" id="repSheetCard">
+          <div class="sheet-music-header">
+            <span id="repSheetTitle">Phrase 1 of 3 • Sheet Music</span>
+            <span id="repStageBadge">Step 1: Tune Each Note</span>
+          </div>
+          <svg id="repSheetSvg" class="sheet-svg" viewBox="0 0 640 124" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+      </div>
+
+      <!-- Repertoire Final Comparison & Playback Screen -->
+      <section class="rep-finale-card" id="repFinaleCard" aria-label="Repertoire Song Playback and Score">
+        <div class="report-header">
+          <div>
+            <span class="prompt-kicker">REPERTOIRE PERFORMANCE COMPLETE</span>
+            <h2 style="margin: 2px 0 0; font-size: 1.25rem; color: var(--ink-dark);" id="repFinaleTitle">
+              Song Performance Summary
+            </h2>
+          </div>
+          <div class="report-summary-chips" id="repFinaleChips"></div>
+        </div>
+
+        <p style="margin: 0; font-size: 0.88rem; color: var(--ink-muted);" id="repFinaleSub">
+          Listen back to your exact tuned pitches played in your rhythm, then compare with Maestro Mochi's reference performance!
+        </p>
+
+        <div class="rep-playback-controls">
+          <button class="btn btn-primary" id="repPlayUserBtn">▶ Hear Your Performance</button>
+          <button class="btn btn-gold" id="repPlayIdealBtn">▶ Hear Reference Performance</button>
+          <button class="btn" id="repNextSongBtn">↻ Practice Another Piece</button>
+        </div>
+
+        <div class="report-list" id="repPhraseBreakdownList"></div>
+      </section>
+
+      <!-- Active Practice Stage Container -->
+      <div id="activePracticeArea" style="display: flex; flex-direction: column; gap: 14px;">
+
+      <!-- Current Musical Prompt -->
+      <div class="prompt-card">
+        <div>
+          <span class="prompt-kicker" id="promptKicker">ROUND 1 OF 5 • TONE &amp; FINGERBOARD POSITION</span>
+          <h1 class="prompt-title" id="promptTitle">Play F♯4 — High 2nd Finger on D String</h1>
+          <p class="prompt-sub" id="promptSub">Click or slide along the D string to bow the note, then lock in your pitch.</p>
+        </div>
+        <button class="btn btn-gold" id="hearRefBtn">
+          🔊 Hear Reference Note
+        </button>
+      </div>
+
+      <!-- Acoustic Wave Interference Visualizer -->
+      <div class="visualizer-box">
+        <canvas id="studioCanvas"></canvas>
+        <div class="canvas-badge" id="canvasReadout">D STRING • POSITION: E4</div>
+        <div class="canvas-action">
+          <button class="btn" id="bowHoldBtn" style="padding: 5px 11px; font-size: 0.75rem;">
+            🎻 Hold to Bow
+          </button>
+        </div>
+      </div>
+
+      <!-- 4-String First-Position Ebony Violin Fingerboard (Tone & Harmony Modes) -->
+      <div class="fingerboard-wrapper" id="fingerboardWrapper">
+        <span class="nut-tag">IVORY NUT</span>
+        <div class="fingerboard-grid" id="fingerboardGrid">
+          <!-- Beginner Finger Tapes -->
+          <div class="finger-tapes" id="fingerTapes">
+            <div class="tape-line" style="left: 5%;"><span>Open</span></div>
+            <div class="tape-line" style="left: 26%;"><span>1st</span></div>
+            <div class="tape-line low-tape" style="left: 36.5%;"><span>Low 2</span></div>
+            <div class="tape-line" style="left: 47%;"><span>High 2</span></div>
+            <div class="tape-line" style="left: 65%;"><span>3rd</span></div>
+            <div class="tape-line" style="left: 85%;"><span>4th</span></div>
+          </div>
+
+          <!-- 4 Violin Strings (Top = E5, Bottom = G3 from player's fingerboard view) -->
+          <div class="string-lane" data-string="E5">
+            <span class="string-label">E5</span>
+            <div class="string-wire" style="height: 2px;"></div>
+          </div>
+          <div class="string-lane" data-string="A4">
+            <span class="string-label">A4</span>
+            <div class="string-wire" style="height: 2.6px;"></div>
+          </div>
+          <div class="string-lane" data-string="D4">
+            <span class="string-label">D4</span>
+            <div class="string-wire" style="height: 3.3px;"></div>
+          </div>
+          <div class="string-lane" data-string="G3">
+            <span class="string-label">G3</span>
+            <div class="string-wire" style="height: 4px;"></div>
+          </div>
+
+          <!-- Optional Learner Guide Dot -->
+          <div class="guide-ghost-pin" id="guideGhostPin"></div>
+
+          <!-- Target Reveal Pin (Shown after locking in) -->
+          <div class="target-reveal-pin" id="targetRevealPin"></div>
+
+          <!-- Player's Interactive Finger Marker -->
+          <div class="finger-node" id="fingerNode">
+            <span id="fingerNoteText">E4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rhythm Bowing Cadence Zone (Mode 3: Rhythm) -->
+      <div class="rhythm-zone" id="rhythmZone">
+        <div class="bow-stroke-strip" id="bowStrokeStrip"></div>
+        <div class="bow-tap-pad" id="bowTapPad" role="button" tabindex="0">
+          <span>🎻 Tap &amp; Hold Bow Pad (or Spacebar)</span>
+          <small style="font-weight: 600; opacity: 0.85;">Match Maestro Mochi's Down-Bow (⊓) and Up-Bow (V) timing &amp; note lengths</small>
+        </div>
+      </div>
+
+      <!-- Round Result Feedback Banner -->
+      <div class="result-banner" id="resultBanner">
+        <div>
+          <strong id="resultHeadline" style="font-size: 1rem;">Perfect Intonation!</strong>
+          <div id="resultDetail" style="font-size: 0.84rem; color: var(--ink-muted); margin-top: 2px;">
+            Dead center on F♯4 • 99% Accuracy
+          </div>
+        </div>
+        <div class="result-points" id="resultPoints">+990</div>
+      </div>
+
+      <!-- Bottom Action Controls -->
+      <div class="action-bar">
+        <button class="btn" id="restartRecitalBtn">↺ New 5-Round Recital</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-primary" id="lockInBtn">✓ Lock In Note</button>
+          <button class="btn btn-gold" id="nextRoundBtn" style="display: none;">Next Round →</button>
+        </div>
+      </div>
+      </div><!-- End #activePracticeArea -->
+
+      <!-- Detailed Post-Recital Performance Report Screen -->
+      <section class="report-screen" id="reportScreen" aria-label="Detailed Recital Performance Report">
+        <div class="report-header">
+          <div>
+            <span class="prompt-kicker">RECITAL PERFORMANCE BREAKDOWN</span>
+            <h2 style="margin: 2px 0 0; font-size: 1.25rem; color: var(--ink-dark);" id="reportMainTitle">
+              Detailed Task-by-Task Comparison
+            </h2>
+          </div>
+          <div class="report-summary-chips" id="reportSummaryChips"></div>
+        </div>
+
+        <div class="report-list" id="reportList"></div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 6px;">
+          <button class="btn" id="reportCopyBtn">Copy Scorecard</button>
+          <button class="btn btn-primary" id="reportNewRecitalBtn">Start New Recital</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Recital Summary Modal (No Emojis in Header, Okay Button Exits to Detailed Report) -->
+  <div class="modal-backdrop" id="summaryModal">
+    <div class="modal-card">
+      <h2 style="margin: 0 0 6px; font-size: 1.35rem; color: var(--ink-dark);">Recital Complete</h2>
+      <p id="summarySubtitle" style="margin: 0; font-size: 0.9rem; color: var(--ink-muted);">
+        You completed all 5 rounds in Maestro Mochi's Violin Studio.
+      </p>
+      <div class="recital-scorecard-box" id="recitalScorecardText"></div>
+      <div class="modal-actions">
+        <button class="btn btn-gold" id="copyScorecardBtn">Copy Scorecard</button>
+        <button class="btn btn-primary" id="okayModalBtn">Okay</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      /* ========================================================================
+         1. WEB AUDIO API VIOLIN SYNTHESIZER & KAWAII VOICE CHIRPS
+         ======================================================================== */
+      class ViolinStudioSynth {
+        constructor() {
+          this.ctx = null;
+          this.master = null;
+          this.voices = new Map();
+          this.muted = false;
+        }
+
+        ensureContext() {
+          if (!this.ctx) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return false;
+            this.ctx = new AudioCtx();
+            this.master = this.ctx.createGain();
+            this.master.gain.value = this.muted ? 0 : 0.72;
+            this.master.connect(this.ctx.destination);
+          }
+          if (this.ctx.state !== "running") {
+            this.ctx.resume().catch(() => {});
+          }
+          return true;
+        }
+
+        setMuted(muted) {
+          this.muted = muted;
+          if (this.master && this.ctx) {
+            this.master.gain.setValueAtTime(muted ? 0 : 0.72, this.ctx.currentTime);
+          }
+        }
+
+        startBowedVoice(id, freq, volume = 0.25, vibratoDepth = 4) {
+          if (!this.ensureContext()) return;
+          this.stopBowedVoice(id, 0.03);
+
+          const startVoice = () => {
+            if (!this.ctx) return;
+            const now = this.ctx.currentTime;
+            const oscSaw = this.ctx.createOscillator();
+            const oscTri = this.ctx.createOscillator();
+            oscSaw.type = "sawtooth";
+            oscTri.type = "triangle";
+            oscSaw.frequency.setValueAtTime(freq, now);
+            oscTri.frequency.setValueAtTime(freq * 2, now);
+
+            const triGain = this.ctx.createGain();
+            triGain.gain.value = 0.14;
+
+            const bodyFilter = this.ctx.createBiquadFilter();
+            bodyFilter.type = "lowpass";
+            bodyFilter.frequency.setValueAtTime(Math.min(3400, freq * 5.2), now);
+            bodyFilter.Q.value = 1.6;
+
+            const env = this.ctx.createGain();
+            env.gain.setValueAtTime(0.0001, now);
+            env.gain.linearRampToValueAtTime(volume, now + 0.07);
+
+            let lfo = null;
+            if (vibratoDepth > 0) {
+              lfo = this.ctx.createOscillator();
+              const lfoGain = this.ctx.createGain();
+              lfo.frequency.value = 5.4;
+              lfoGain.gain.value = vibratoDepth;
+              lfo.connect(lfoGain);
+              lfoGain.connect(oscSaw.detune);
+              lfo.start(now);
+            }
+
+            oscSaw.connect(bodyFilter);
+            oscTri.connect(triGain);
+            triGain.connect(bodyFilter);
+            bodyFilter.connect(env);
+            env.connect(this.master);
+
+            oscSaw.start(now);
+            oscTri.start(now);
+
+            this.voices.set(id, { oscSaw, oscTri, lfo, env, bodyFilter });
+          };
+
+          if (this.ctx.state !== "running") {
+            this.ctx.resume().then(startVoice).catch(() => {});
+          } else {
+            startVoice();
+          }
+        }
+
+        startBowedVoice(id, freq, volume = 0.25, vibratoDepth = 4) {
+          if (!this.ensureContext()) return;
+          this.stopBowedVoice(id, 0.03);
+
+          const now = this.ctx.currentTime;
+          const oscSaw = this.ctx.createOscillator();
+          const oscTri = this.ctx.createOscillator();
+          oscSaw.type = "sawtooth";
+          oscTri.type = "triangle";
+          oscSaw.frequency.setValueAtTime(freq, now);
+          oscTri.frequency.setValueAtTime(freq * 2, now);
+
+          const triGain = this.ctx.createGain();
+          triGain.gain.value = 0.14;
+
+          const bodyFilter = this.ctx.createBiquadFilter();
+          bodyFilter.type = "lowpass";
+          bodyFilter.frequency.setValueAtTime(Math.min(3400, freq * 5.2), now);
+          bodyFilter.Q.value = 1.6;
+
+          const env = this.ctx.createGain();
+          env.gain.setValueAtTime(0.0001, now);
+          env.gain.linearRampToValueAtTime(volume, now + 0.07);
+
+          let lfo = null;
+          if (vibratoDepth > 0) {
+            lfo = this.ctx.createOscillator();
+            const lfoGain = this.ctx.createGain();
+            lfo.frequency.value = 5.4;
+            lfoGain.gain.value = vibratoDepth;
+            lfo.connect(lfoGain);
+            lfoGain.connect(oscSaw.detune);
+            lfo.start(now);
+          }
+
+          oscSaw.connect(bodyFilter);
+          oscTri.connect(triGain);
+          triGain.connect(bodyFilter);
+          bodyFilter.connect(env);
+          env.connect(this.master);
+
+          oscSaw.start(now);
+          oscTri.start(now);
+
+          this.voices.set(id, { oscSaw, oscTri, lfo, env, bodyFilter });
+        }
+
+        updateBowedVoice(id, freq) {
+          const v = this.voices.get(id);
+          if (!v || !this.ctx) return;
+          const now = this.ctx.currentTime;
+          v.oscSaw.frequency.setTargetAtTime(freq, now, 0.015);
+          v.oscTri.frequency.setTargetAtTime(freq * 2, now, 0.015);
+          v.bodyFilter.frequency.setTargetAtTime(Math.min(3400, freq * 5.2), now, 0.02);
+        }
+
+        stopBowedVoice(id, release = 0.1) {
+          const v = this.voices.get(id);
+          if (!v || !this.ctx) return;
+          this.voices.delete(id);
+          const now = this.ctx.currentTime;
+          try {
+            v.env.gain.cancelScheduledValues(now);
+            v.env.gain.setValueAtTime(Math.max(0.0001, v.env.gain.value), now);
+            v.env.gain.exponentialRampToValueAtTime(0.0001, now + release);
+            v.oscSaw.stop(now + release + 0.02);
+            v.oscTri.stop(now + release + 0.02);
+            if (v.lfo) v.lfo.stop(now + release + 0.02);
+          } catch (_) {}
+        }
+
+        stopAllVoices() {
+          Array.from(this.voices.keys()).forEach((id) => this.stopBowedVoice(id, 0.04));
+        }
+
+        playScheduledViolinNote(freq, durSec, isDownBow, delaySec) {
+          if (!this.ensureContext()) return;
+          const start = this.ctx.currentTime + delaySec;
+          const end = start + Math.max(0.08, durSec);
+
+          const osc = this.ctx.createOscillator();
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(freq, start);
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = "lowpass";
+          filter.frequency.setValueAtTime(isDownBow ? 2600 : 2100, start);
+          filter.Q.value = 1.4;
+
+          const env = this.ctx.createGain();
+          const peak = isDownBow ? 0.28 : 0.22;
+          env.gain.setValueAtTime(0.0001, start);
+          env.gain.linearRampToValueAtTime(peak, start + 0.035);
+          env.gain.setValueAtTime(peak * 0.85, Math.max(start + 0.04, end - 0.04));
+          env.gain.exponentialRampToValueAtTime(0.0001, end + 0.03);
+
+          osc.connect(filter);
+          filter.connect(env);
+          env.connect(this.master);
+
+          osc.start(start);
+          osc.stop(end + 0.04);
+        }
+
+        playWoodClick(accent, delaySec) {
+          if (!this.ensureContext()) return;
+          const start = this.ctx.currentTime + delaySec;
+          const osc = this.ctx.createOscillator();
+          const env = this.ctx.createGain();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(accent ? 980 : 720, start);
+          osc.frequency.exponentialRampToValueAtTime(220, start + 0.045);
+
+          env.gain.setValueAtTime(0.22, start);
+          env.gain.exponentialRampToValueAtTime(0.0001, start + 0.05);
+
+          osc.connect(env);
+          env.connect(this.master);
+          osc.start(start);
+          osc.stop(start + 0.055);
+        }
+
+        playBunnyChirp(mood) {
+          if (this.muted || !this.ensureContext()) return;
+          const notes =
+            mood === "cheering"
+              ? [660, 830, 990]
+              : mood === "happy"
+              ? [587, 740]
+              : [523, 466];
+          notes.forEach((f, idx) => {
+            const t = this.ctx.currentTime + idx * 0.075;
+            const osc = this.ctx.createOscillator();
+            const env = this.ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(f, t);
+            osc.frequency.exponentialRampToValueAtTime(f * 1.12, t + 0.06);
+            env.gain.setValueAtTime(0.09, t);
+            env.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+            osc.connect(env);
+            env.connect(this.master);
+            osc.start(t);
+            osc.stop(t + 0.075);
+          });
+        }
+      }
+
+      /* ========================================================================
+         2. FIRST-POSITION VIOLIN STRINGS, NOTES, HARMONIES & RHYTHM PACKS
+         ======================================================================== */
+      const VIOLIN_STRINGS = [
+        { name: "E5", short: "E", freq: 659.25, laneIndex: 0 },
+        { name: "D4", short: "D", freq: 293.66, laneIndex: 2 },
+        { name: "A4", short: "A", freq: 440.00, laneIndex: 1 },
+        { name: "G3", short: "G", freq: 196.00, laneIndex: 3 }
+      ];
+
+      const TONE_NOTES = [
+        { string: "G3", note: "A3",  semis: 2, finger: "1st Finger" },
+        { string: "G3", note: "B♭3", semis: 3, finger: "Low 2nd Finger" },
+        { string: "G3", note: "B3",  semis: 4, finger: "High 2nd Finger" },
+        { string: "G3", note: "C4",  semis: 5, finger: "3rd Finger" },
+        { string: "D4", note: "E4",  semis: 2, finger: "1st Finger" },
+        { string: "D4", note: "F4",  semis: 3, finger: "Low 2nd Finger" },
+        { string: "D4", note: "F♯4", semis: 4, finger: "High 2nd Finger" },
+        { string: "D4", note: "G4",  semis: 5, finger: "3rd Finger" },
+        { string: "A4", note: "B4",  semis: 2, finger: "1st Finger" },
+        { string: "A4", note: "C5",  semis: 3, finger: "Low 2nd Finger" },
+        { string: "A4", note: "C♯5", semis: 4, finger: "High 2nd Finger" },
+        { string: "A4", note: "D5",  semis: 5, finger: "3rd Finger" },
+        { string: "E5", note: "F♯5", semis: 2, finger: "1st Finger" },
+        { string: "E5", note: "G5",  semis: 3, finger: "Low 2nd Finger" },
+        { string: "E5", note: "G♯5", semis: 4, finger: "High 2nd Finger" },
+        { string: "E5", note: "A5",  semis: 5, finger: "3rd Finger" }
+      ];
+
+      const HARMONY_CHALLENGES = [
+        { droneStr: "G3", upperStr: "D4", targetNote: "D4",  interval: "Perfect 5th",   ratio: 3 / 2,  finger: "Open D String" },
+        { droneStr: "G3", upperStr: "D4", targetNote: "E4",  interval: "Major 6th",     ratio: 5 / 3,  finger: "1st Finger on D" },
+        { droneStr: "G3", upperStr: "D4", targetNote: "G4",  interval: "Pure Octave",   ratio: 2 / 1,  finger: "3rd Finger on D" },
+        { droneStr: "D4", upperStr: "A4", targetNote: "A4",  interval: "Perfect 5th",   ratio: 3 / 2,  finger: "Open A String" },
+        { droneStr: "D4", upperStr: "A4", targetNote: "B4",  interval: "Major 6th",     ratio: 5 / 3,  finger: "1st Finger on A" },
+        { droneStr: "D4", upperStr: "A4", targetNote: "D5",  interval: "Pure Octave",   ratio: 2 / 1,  finger: "3rd Finger on A" },
+        { droneStr: "A4", upperStr: "E5", targetNote: "F♯5", interval: "Major 6th",     ratio: 5 / 3,  finger: "1st Finger on E" },
+        { droneStr: "A4", upperStr: "E5", targetNote: "G5",  interval: "Minor 7th",     ratio: 16 / 9, finger: "Low 2nd Finger on E" },
+        { droneStr: "A4", upperStr: "E5", targetNote: "A5",  interval: "Pure Octave",   ratio: 2 / 1,  finger: "3rd Finger on E" }
+      ];
+
+      const RHYTHM_PACKS = {
+        beginner: {
+          label: "Beginner (Suzuki & Folk)",
+          patterns: [
+            {
+              title: "Twinkle, Twinkle Little Star (Theme)",
+              level: "Beginner",
+              summary: "A4 → A4 → E5 → E5 → F♯5 → F♯5 → E5",
+              bpm: 88,
+              rootStr: "A4",
+              notes: [
+                { beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "A4",  semi: 0 },
+                { beat: 1.0, dur: 0.85, bow: "V", symbol: "♩", note: "A4",  semi: 0 },
+                { beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "E5",  semi: 7 },
+                { beat: 3.0, dur: 0.85, bow: "V", symbol: "♩", note: "E5",  semi: 7 },
+                { beat: 4.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "F♯5", semi: 9 },
+                { beat: 5.0, dur: 0.85, bow: "V", symbol: "♩", note: "F♯5", semi: 9 },
+                { beat: 6.0, dur: 1.65, bow: "⊓", symbol: "𝅗𝅥", note: "E5",  semi: 7 }
+              ]
+            },
+            {
+              title: "Lightly Row (Opening Phrase)",
+              level: "Beginner",
+              summary: "A4 → F♯4 → F♯4 → G4 → E4 → E4",
+              bpm: 92,
+              rootStr: "D4",
+              notes: [
+                { beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "A4",  semi: 7 },
+                { beat: 1.0, dur: 0.85, bow: "V", symbol: "♩", note: "F♯4", semi: 4 },
+                { beat: 2.0, dur: 1.65, bow: "⊓", symbol: "𝅗𝅥", note: "F♯4", semi: 4 },
+                { beat: 4.0, dur: 0.85, bow: "V", symbol: "♩", note: "G4",  semi: 5 },
+                { beat: 5.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "E4",  semi: 2 },
+                { beat: 6.0, dur: 1.65, bow: "V", symbol: "𝅗𝅥", note: "E4",  semi: 2 }
+              ]
+            },
+            {
+              title: "Ode to Joy — Beethoven",
+              level: "Beginner",
+              summary: "F♯4 → F♯4 → G4 → A4 → A4 → G4 → F♯4 → E4",
+              bpm: 96,
+              rootStr: "D4",
+              notes: [
+                { beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "F♯4", semi: 4 },
+                { beat: 1.0, dur: 0.85, bow: "V", symbol: "♩", note: "F♯4", semi: 4 },
+                { beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "G4",  semi: 5 },
+                { beat: 3.0, dur: 0.85, bow: "V", symbol: "♩", note: "A4",  semi: 7 },
+                { beat: 4.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "A4",  semi: 7 },
+                { beat: 5.0, dur: 0.85, bow: "V", symbol: "♩", note: "G4",  semi: 5 },
+                { beat: 6.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "F♯4", semi: 4 },
+                { beat: 7.0, dur: 0.85, bow: "V", symbol: "♩", note: "E4",  semi: 2 }
+              ]
+            },
+            {
+              title: "French Folk Song (Waltz Pulse)",
+              level: "Beginner",
+              summary: "D5 → D5 → D5 → C♯5 → B4 → A4",
+              bpm: 94,
+              rootStr: "A4",
+              notes: [
+                { beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩",  note: "D5",  semi: 5 },
+                { beat: 1.0, dur: 0.85, bow: "V", symbol: "♩",  note: "D5",  semi: 5 },
+                { beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩",  note: "D5",  semi: 5 },
+                { beat: 3.0, dur: 0.85, bow: "V", symbol: "♩",  note: "C♯5", semi: 4 },
+                { beat: 4.0, dur: 0.85, bow: "⊓", symbol: "♩",  note: "B4",  semi: 2 },
+                { beat: 5.0, dur: 1.70, bow: "V", symbol: "♩.", note: "A4",  semi: 0 }
+              ]
+            },
+            {
+              title: "Song of the Wind — Suzuki",
+              level: "Beginner",
+              summary: "A4 → B4 → C♯5 → D5 → E5 → E5 → E5",
+              bpm: 96,
+              rootStr: "A4",
+              notes: [
+                { beat: 0.0, dur: 0.42, bow: "⊓", symbol: "♪", note: "A4",  semi: 0 },
+                { beat: 0.5, dur: 0.42, bow: "V", symbol: "♪", note: "B4",  semi: 2 },
+                { beat: 1.0, dur: 0.42, bow: "⊓", symbol: "♪", note: "C♯5", semi: 4 },
+                { beat: 1.5, dur: 0.42, bow: "V", symbol: "♪", note: "D5",  semi: 5 },
+                { beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "E5",  semi: 7 },
+                { beat: 3.0, dur: 0.85, bow: "V", symbol: "♩", note: "E5",  semi: 7 },
+                { beat: 4.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "E5",  semi: 7 }
+              ]
+            }
+          ]
+        },
+        intermediate: {
+          label: "Intermediate (Baroque & Classical)",
+          patterns: [
+            {
+              title: "Minuet in G Major — J.S. Bach",
+              level: "Intermediate",
+              summary: "D5 → G4 → A4 → B4 → C5 → D5 → G4 → G4",
+              bpm: 102,
+              rootStr: "G3",
+              notes: [
+                { beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "D5", semi: 7 },
+                { beat: 1.0, dur: 0.42, bow: "V", symbol: "♪", note: "G4", semi: 0 },
+                { beat: 1.5, dur: 0.42, bow: "⊓", symbol: "♪", note: "A4", semi: 2 },
+                { beat: 2.0, dur: 0.42, bow: "V", symbol: "♪", note: "B4", semi: 4 },
+                { beat: 2.5, dur: 0.42, bow: "⊓", symbol: "♪", note: "C5", semi: 5 },
+                { beat: 3.0, dur: 0.85, bow: "V", symbol: "♩", note: "D5", semi: 7 },
+                { beat: 4.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "G4", semi: 0 },
+                { beat: 5.0, dur: 0.85, bow: "V", symbol: "♩", note: "G4", semi: 0 }
+              ]
+            },
+            {
+              title: "Spring (The Four Seasons) — Vivaldi",
+              level: "Intermediate",
+              summary: "E4 → G♯4 → G♯4 → G♯4 → F♯4 → E4 → B4",
+              bpm: 106,
+              rootStr: "D4",
+              notes: [
+                { beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩",  note: "E4",  semi: 2 },
+                { beat: 1.0, dur: 0.85, bow: "V", symbol: "♩",  note: "G♯4", semi: 6 },
+                { beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩",  note: "G♯4", semi: 6 },
+                { beat: 3.0, dur: 0.85, bow: "V", symbol: "♩",  note: "G♯4", semi: 6 },
+                { beat: 4.0, dur: 0.42, bow: "⊓", symbol: "♪",  note: "F♯4", semi: 4 },
+                { beat: 4.5, dur: 0.42, bow: "V", symbol: "♪",  note: "E4",  semi: 2 },
+                { beat: 5.0, dur: 1.70, bow: "⊓", symbol: "♩.", note: "B4",  semi: 9 }
+              ]
+            },
+            {
+              title: "Gavotte in G Minor — F.J. Gossec",
+              level: "Intermediate",
+              summary: "D4 → G4 → B♭4 → A4 → G4 → F♯4 → G4",
+              bpm: 104,
+              rootStr: "G3",
+              notes: [
+                { beat: 0.0, dur: 0.42, bow: "V", symbol: "♪", note: "D4",  semi: 7 },
+                { beat: 0.5, dur: 0.42, bow: "⊓", symbol: "♪", note: "G4",  semi: 0 },
+                { beat: 1.0, dur: 0.85, bow: "V", symbol: "♩", note: "B♭4", semi: 3 },
+                { beat: 2.0, dur: 0.42, bow: "⊓", symbol: "♪", note: "A4",  semi: 2 },
+                { beat: 2.5, dur: 0.42, bow: "V", symbol: "♪", note: "G4",  semi: 0 },
+                { beat: 3.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "F♯4", semi: 11 },
+                { beat: 4.0, dur: 0.85, bow: "V", symbol: "♩", note: "G4",  semi: 0 }
+              ]
+            },
+            {
+              title: "Eine kleine Nachtmusik — Mozart",
+              level: "Intermediate",
+              summary: "G4 → D4 → G4 → D4 → G4 → D4 → G4 → B4 → D5",
+              bpm: 112,
+              rootStr: "D4",
+              notes: [
+                { beat: 0.0, dur: 1.25, bow: "⊓", symbol: "♩.", note: "G4", semi: 5 },
+                { beat: 1.5, dur: 0.42, bow: "V", symbol: "♪",  note: "D4", semi: 0 },
+                { beat: 2.0, dur: 1.25, bow: "⊓", symbol: "♩.", note: "G4", semi: 5 },
+                { beat: 3.5, dur: 0.42, bow: "V", symbol: "♪",  note: "D4", semi: 0 },
+                { beat: 4.0, dur: 0.42, bow: "⊓", symbol: "♪",  note: "G4", semi: 5 },
+                { beat: 4.5, dur: 0.42, bow: "V", symbol: "♪",  note: "D4", semi: 0 },
+                { beat: 5.0, dur: 0.42, bow: "⊓", symbol: "♪",  note: "G4", semi: 5 },
+                { beat: 5.5, dur: 0.42, bow: "V", symbol: "♪",  note: "B4", semi: 9 },
+                { beat: 6.0, dur: 1.50, bow: "⊓", symbol: "𝅗𝅥",  note: "D5", semi: 12 }
+              ]
+            },
+            {
+              title: "Canon in D (Melodic Motif) — Pachelbel",
+              level: "Intermediate",
+              summary: "F♯5 → E5 → D5 → C♯5 → B4 → A4 → B4 → C♯5",
+              bpm: 86,
+              rootStr: "A4",
+              notes: [
+                { beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "F♯5", semi: 9 },
+                { beat: 1.0, dur: 0.85, bow: "V", symbol: "♩", note: "E5",  semi: 7 },
+                { beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "D5",  semi: 5 },
+                { beat: 3.0, dur: 0.85, bow: "V", symbol: "♩", note: "C♯5", semi: 4 },
+                { beat: 4.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "B4",  semi: 2 },
+                { beat: 5.0, dur: 0.85, bow: "V", symbol: "♩", note: "A4",  semi: 0 },
+                { beat: 6.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "B4",  semi: 2 },
+                { beat: 7.0, dur: 0.85, bow: "V", symbol: "♩", note: "C♯5", semi: 4 }
+              ]
+            }
+          ]
+        },
+        advanced: {
+          label: "Advanced (Romantic Showpieces)",
+          patterns: [
+            {
+              title: "Hungarian Dance No. 5 — J. Brahms",
+              level: "Advanced",
+              summary: "F♯4 → B4 → D5 → B4 → F♯4 → G4 → A4 → F♯4",
+              bpm: 108,
+              rootStr: "D4",
+              notes: [
+                { beat: 0.0,  dur: 1.32, bow: "⊓", symbol: "♩.", note: "F♯4", semi: 4 },
+                { beat: 1.5,  dur: 0.42, bow: "V", symbol: "♪",  note: "B4",  semi: 9 },
+                { beat: 2.0,  dur: 1.32, bow: "⊓", symbol: "♩.", note: "D5",  semi: 12 },
+                { beat: 3.5,  dur: 0.42, bow: "V", symbol: "♪",  note: "B4",  semi: 9 },
+                { beat: 4.0,  dur: 0.68, bow: "⊓", symbol: "♪.", note: "F♯4", semi: 4 },
+                { beat: 4.75, dur: 0.22, bow: "V", symbol: "♬",  note: "G4",  semi: 5 },
+                { beat: 5.0,  dur: 0.85, bow: "⊓", symbol: "♩",  note: "A4",  semi: 7 },
+                { beat: 6.0,  dur: 1.20, bow: "V", symbol: "♩",  note: "F♯4", semi: 4 }
+              ]
+            },
+            {
+              title: "Csárdás (Lassan Cadence) — V. Monti",
+              level: "Advanced",
+              summary: "A4 → F4 → E4 → D4 → E4 → F4 → A4",
+              bpm: 96,
+              rootStr: "D4",
+              notes: [
+                { beat: 0.0,  dur: 0.42, bow: "⊓", symbol: "♪",  note: "A4", semi: 7 },
+                { beat: 0.5,  dur: 1.15, bow: "V", symbol: "♩.", note: "F4", semi: 3 },
+                { beat: 1.75, dur: 0.22, bow: "⊓", symbol: "♬",  note: "E4", semi: 2 },
+                { beat: 2.0,  dur: 0.85, bow: "V", symbol: "♩",  note: "D4", semi: 0 },
+                { beat: 3.0,  dur: 0.42, bow: "⊓", symbol: "♪",  note: "E4", semi: 2 },
+                { beat: 3.5,  dur: 0.42, bow: "V", symbol: "♪",  note: "F4", semi: 3 },
+                { beat: 4.0,  dur: 1.50, bow: "⊓", symbol: "𝅗𝅥",  note: "A4", semi: 7 }
+              ]
+            },
+            {
+              title: "Liebesleid (Viennese Rubato) — F. Kreisler",
+              level: "Advanced",
+              summary: "E5 → C5 → A4 → F5 → D5 → B4 → E5",
+              bpm: 104,
+              rootStr: "A4",
+              notes: [
+                { beat: 0.0, dur: 0.42, bow: "V", symbol: "♪",  note: "E5", semi: 7 },
+                { beat: 0.5, dur: 0.88, bow: "⊓", symbol: "♩",  note: "C5", semi: 3 },
+                { beat: 1.5, dur: 0.42, bow: "V", symbol: "♪",  note: "A4", semi: 0 },
+                { beat: 2.0, dur: 0.88, bow: "⊓", symbol: "♩",  note: "F5", semi: 8 },
+                { beat: 3.0, dur: 0.42, bow: "V", symbol: "♪",  note: "D5", semi: 5 },
+                { beat: 3.5, dur: 0.42, bow: "⊓", symbol: "♪",  note: "B4", semi: 2 },
+                { beat: 4.0, dur: 1.50, bow: "V", symbol: "♩.", note: "E5", semi: 7 }
+              ]
+            },
+            {
+              title: "Danse Macabre (Scordatura Waltz) — Saint-Saëns",
+              level: "Advanced",
+              summary: "D4 → A4 → D4 → A4 → B♭4 → A4 → G4",
+              bpm: 118,
+              rootStr: "D4",
+              notes: [
+                { beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "D4",  semi: 0 },
+                { beat: 1.0, dur: 1.55, bow: "V", symbol: "𝅗𝅥", note: "A4",  semi: 7 },
+                { beat: 3.0, dur: 0.85, bow: "⊓", symbol: "♩", note: "D4",  semi: 0 },
+                { beat: 4.0, dur: 0.85, bow: "V", symbol: "♩", note: "A4",  semi: 7 },
+                { beat: 5.0, dur: 0.42, bow: "⊓", symbol: "♪", note: "B♭4", semi: 8 },
+                { beat: 5.5, dur: 0.42, bow: "V", symbol: "♪", note: "A4",  semi: 7 },
+                { beat: 6.0, dur: 1.40, bow: "⊓", symbol: "𝅗𝅥", note: "G4",  semi: 5 }
+              ]
+            },
+            {
+              title: "Zigeunerweisen (Gypsy Syncopation) — Sarasate",
+              level: "Advanced",
+              summary: "G3 → B♭3 → D4 → G4 → F♯4 → D4 → G3",
+              bpm: 102,
+              rootStr: "G3",
+              notes: [
+                { beat: 0.0,  dur: 0.35, bow: "⊓", symbol: "♪",  note: "G3",  semi: 0 },
+                { beat: 0.5,  dur: 0.90, bow: "V", symbol: "♩",  note: "B♭3", semi: 3 },
+                { beat: 1.5,  dur: 0.35, bow: "⊓", symbol: "♪",  note: "D4",  semi: 7 },
+                { beat: 2.0,  dur: 1.15, bow: "V", symbol: "♩.", note: "G4",  semi: 12 },
+                { beat: 3.25, dur: 0.22, bow: "⊓", symbol: "♬",  note: "F♯4", semi: 11 },
+                { beat: 3.5,  dur: 0.42, bow: "V", symbol: "♪",  note: "D4",  semi: 7 },
+                { beat: 4.0,  dur: 1.35, bow: "⊓", symbol: "𝅗𝅥",  note: "G3",  semi: 0 }
+              ]
+            }
+          ]
+        },
+        pro: {
+          label: "Pro (Virtuoso Caprices & Modern)",
+          patterns: [
+            {
+              title: "Caprice No. 24 (Theme) — N. Paganini",
+              level: "Pro",
+              summary: "A4 → A4 → C5 → B4 → A4 → E5 → E5 → F5 → E5",
+              bpm: 122,
+              rootStr: "A4",
+              notes: [
+                { beat: 0.0,  dur: 0.40, bow: "⊓", symbol: "♪", note: "A4", semi: 0 },
+                { beat: 0.5,  dur: 0.20, bow: "V", symbol: "♬", note: "A4", semi: 0 },
+                { beat: 0.75, dur: 0.20, bow: "⊓", symbol: "♬", note: "C5", semi: 3 },
+                { beat: 1.0,  dur: 0.40, bow: "V", symbol: "♪", note: "B4", semi: 2 },
+                { beat: 1.5,  dur: 0.40, bow: "⊓", symbol: "♪", note: "A4", semi: 0 },
+                { beat: 2.0,  dur: 0.40, bow: "V", symbol: "♪", note: "E5", semi: 7 },
+                { beat: 2.5,  dur: 0.20, bow: "⊓", symbol: "♬", note: "E5", semi: 7 },
+                { beat: 2.75, dur: 0.20, bow: "V", symbol: "♬", note: "F5", semi: 8 },
+                { beat: 3.0,  dur: 0.65, bow: "⊓", symbol: "♩", note: "E5", semi: 7 }
+              ]
+            },
+            {
+              title: "Libertango (3+3+2 Clave Accent) — A. Piazzolla",
+              level: "Pro",
+              summary: "E5 → E5 → F5 → E5 → D5 → C5 → B4 → A4",
+              bpm: 126,
+              rootStr: "A4",
+              notes: [
+                { beat: 0.0, dur: 0.68, bow: "⊓", symbol: "♪.", note: "E5", semi: 7 },
+                { beat: 0.75, dur: 0.68, bow: "V", symbol: "♪.", note: "F5", semi: 8 },
+                { beat: 1.5, dur: 0.42, bow: "⊓", symbol: "♪",  note: "E5", semi: 7 },
+                { beat: 2.0, dur: 0.68, bow: "V", symbol: "♪.", note: "D5", semi: 5 },
+                { beat: 2.75, dur: 0.68, bow: "⊓", symbol: "♪.", note: "C5", semi: 3 },
+                { beat: 3.5, dur: 0.42, bow: "V", symbol: "♪",  note: "B4", semi: 2 },
+                { beat: 4.0, dur: 1.25, bow: "⊓", symbol: "𝅗𝅥",  note: "A4", semi: 0 }
+              ]
+            },
+            {
+              title: "Romanian Folk Dances (Joc cu Bâtă) — B. Bartók",
+              level: "Pro",
+              summary: "A4 → E5 → D5 → C5 → D5 → B4 → A4",
+              bpm: 118,
+              rootStr: "A4",
+              notes: [
+                { beat: 0.0,  dur: 0.40, bow: "⊓", symbol: "♪", note: "A4", semi: 0 },
+                { beat: 0.5,  dur: 0.85, bow: "V", symbol: "♩", note: "E5", semi: 7 },
+                { beat: 1.5,  dur: 0.40, bow: "⊓", symbol: "♪", note: "D5", semi: 5 },
+                { beat: 2.0,  dur: 0.22, bow: "V", symbol: "♬", note: "C5", semi: 3 },
+                { beat: 2.25, dur: 0.22, bow: "⊓", symbol: "♬", note: "D5", semi: 5 },
+                { beat: 2.5,  dur: 0.42, bow: "V", symbol: "♪", note: "B4", semi: 2 },
+                { beat: 3.0,  dur: 0.85, bow: "⊓", symbol: "♩", note: "A4", semi: 0 }
+              ]
+            },
+            {
+              title: "Violin Concerto No. 1 (Scherzo) — S. Prokofiev",
+              level: "Pro",
+              summary: "D4 → A4 → B♭4 → E4 → F4 → C5 → D4",
+              bpm: 132,
+              rootStr: "D4",
+              notes: [
+                { beat: 0.0,  dur: 0.22, bow: "⊓", symbol: "♬", note: "D4",  semi: 0 },
+                { beat: 0.25, dur: 0.22, bow: "V", symbol: "♬", note: "A4",  semi: 7 },
+                { beat: 0.5,  dur: 0.42, bow: "⊓", symbol: "♪", note: "B♭4", semi: 8 },
+                { beat: 1.0,  dur: 0.22, bow: "V", symbol: "♬", note: "E4",  semi: 2 },
+                { beat: 1.25, dur: 0.22, bow: "⊓", symbol: "♬", note: "F4",  semi: 3 },
+                { beat: 1.5,  dur: 0.42, bow: "V", symbol: "♪", note: "C5",  semi: 10 },
+                { beat: 2.0,  dur: 0.85, bow: "⊓", symbol: "♩", note: "D4",  semi: 0 }
+              ]
+            },
+            {
+              title: "Caprice No. 9 (La Chasse) — N. Paganini",
+              level: "Pro",
+              summary: "E5 → C♯5 → A4 → E5 → D5 → B4 → G♯4 → E4",
+              bpm: 124,
+              rootStr: "A4",
+              notes: [
+                { beat: 0.0,  dur: 0.65, bow: "⊓", symbol: "♪.", note: "E5",  semi: 7 },
+                { beat: 0.75, dur: 0.20, bow: "V", symbol: "♬",  note: "C♯5", semi: 4 },
+                { beat: 1.0,  dur: 0.40, bow: "⊓", symbol: "♪",  note: "A4",  semi: 0 },
+                { beat: 1.5,  dur: 0.40, bow: "V", symbol: "♪",  note: "E5",  semi: 7 },
+                { beat: 2.0,  dur: 0.65, bow: "⊓", symbol: "♪.", note: "D5",  semi: 5 },
+                { beat: 2.75, dur: 0.20, bow: "V", symbol: "♬",  note: "B4",  semi: 2 },
+                { beat: 3.0,  dur: 0.40, bow: "⊓", symbol: "♪",  note: "G♯4", semi: -1 },
+                { beat: 3.5,  dur: 0.40, bow: "V", symbol: "♪",  note: "E4",  semi: -5 }
+              ]
+            }
+          ]
+        }
+      };
+
+      /* ========================================================================
+         2B. REPERTOIRE SONG BUILDER CATALOG (3 PHRASES PER SONG, 4 DIFFICULTIES)
+         ======================================================================== */
+      const REPERTOIRE_PACKS = {
+        beginner: [
+          {
+            title: "Twinkle, Twinkle Little Star — Traditional",
+            bpm: 86,
+            phrases: [
+              {
+                name: "Phrase 1 (Opening Fifth)",
+                notes: [
+                  { note: "A4",  string: "A4", semis: 0, finger: "Open A",      beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 74 },
+                  { note: "E5",  string: "E5", semis: 0, finger: "Open E",      beat: 1.0, dur: 0.85, bow: "V", symbol: "♩", staffY: 46 },
+                  { note: "F♯5", string: "E5", semis: 2, finger: "1st Finger",  beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 39 },
+                  { note: "E5",  string: "E5", semis: 0, finger: "Open E",      beat: 3.0, dur: 1.65, bow: "V", symbol: "𝅗𝅥", staffY: 46 }
+                ]
+              },
+              {
+                name: "Phrase 2 (Stepwise Descent)",
+                notes: [
+                  { note: "D5",  string: "A4", semis: 5, finger: "3rd Finger",  beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 53 },
+                  { note: "C♯5", string: "A4", semis: 4, finger: "High 2nd",    beat: 1.0, dur: 0.85, bow: "V", symbol: "♩", staffY: 60 },
+                  { note: "B4",  string: "A4", semis: 2, finger: "1st Finger",  beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 67 },
+                  { note: "A4",  string: "A4", semis: 0, finger: "Open A",      beat: 3.0, dur: 1.65, bow: "V", symbol: "𝅗𝅥", staffY: 74 }
+                ]
+              },
+              {
+                name: "Phrase 3 (Middle Answer)",
+                notes: [
+                  { note: "E5",  string: "E5", semis: 0, finger: "Open E",      beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 46 },
+                  { note: "D5",  string: "A4", semis: 5, finger: "3rd Finger",  beat: 1.0, dur: 0.85, bow: "V", symbol: "♩", staffY: 53 },
+                  { note: "C♯5", string: "A4", semis: 4, finger: "High 2nd",    beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 60 },
+                  { note: "B4",  string: "A4", semis: 2, finger: "1st Finger",  beat: 3.0, dur: 1.65, bow: "V", symbol: "𝅗𝅥", staffY: 67 }
+                ]
+              }
+            ]
+          },
+          {
+            title: "Ode to Joy — L. van Beethoven",
+            bpm: 92,
+            phrases: [
+              {
+                name: "Phrase 1 (Ascending Joy)",
+                notes: [
+                  { note: "F♯4", string: "D4", semis: 4, finger: "High 2nd",    beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 88 },
+                  { note: "G4",  string: "D4", semis: 5, finger: "3rd Finger",  beat: 1.0, dur: 0.85, bow: "V", symbol: "♩", staffY: 81 },
+                  { note: "A4",  string: "A4", semis: 0, finger: "Open A",      beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 74 },
+                  { note: "G4",  string: "D4", semis: 5, finger: "3rd Finger",  beat: 3.0, dur: 0.85, bow: "V", symbol: "♩", staffY: 81 }
+                ]
+              },
+              {
+                name: "Phrase 2 (Gentle Cadence)",
+                notes: [
+                  { note: "F♯4", string: "D4", semis: 4, finger: "High 2nd",    beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 88 },
+                  { note: "E4",  string: "D4", semis: 2, finger: "1st Finger",  beat: 1.0, dur: 0.85, bow: "V", symbol: "♩", staffY: 95 },
+                  { note: "D4",  string: "D4", semis: 0, finger: "Open D",      beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 102 },
+                  { note: "E4",  string: "D4", semis: 2, finger: "1st Finger",  beat: 3.0, dur: 0.85, bow: "V", symbol: "♩", staffY: 95 }
+                ]
+              },
+              {
+                name: "Phrase 3 (Dotted Resolution)",
+                notes: [
+                  { note: "F♯4", string: "D4", semis: 4, finger: "High 2nd",    beat: 0.0, dur: 1.25, bow: "⊓", symbol: "♩.", staffY: 88 },
+                  { note: "E4",  string: "D4", semis: 2, finger: "1st Finger",  beat: 1.5, dur: 0.42, bow: "V", symbol: "♪",  staffY: 95 },
+                  { note: "D4",  string: "D4", semis: 0, finger: "Open D",      beat: 2.0, dur: 1.65, bow: "⊓", symbol: "𝅗𝅥",  staffY: 102 }
+                ]
+              }
+            ]
+          }
+        ],
+        intermediate: [
+          {
+            title: "Minuet in G Major — J.S. Bach",
+            bpm: 98,
+            phrases: [
+              {
+                name: "Phrase 1 (Baroque Leap)",
+                notes: [
+                  { note: "D5", string: "A4", semis: 5, finger: "3rd Finger", beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 53 },
+                  { note: "G4", string: "D4", semis: 5, finger: "3rd Finger", beat: 1.0, dur: 0.42, bow: "V", symbol: "♪", staffY: 81 },
+                  { note: "A4", string: "A4", semis: 0, finger: "Open A",     beat: 1.5, dur: 0.42, bow: "⊓", symbol: "♪", staffY: 74 },
+                  { note: "B4", string: "A4", semis: 2, finger: "1st Finger", beat: 2.0, dur: 0.42, bow: "V", symbol: "♪", staffY: 67 },
+                  { note: "C5", string: "A4", semis: 3, finger: "Low 2nd",    beat: 2.5, dur: 0.42, bow: "⊓", symbol: "♪", staffY: 60 }
+                ]
+              },
+              {
+                name: "Phrase 2 (G-Major Echo)",
+                notes: [
+                  { note: "D5", string: "A4", semis: 5, finger: "3rd Finger", beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 53 },
+                  { note: "G4", string: "D4", semis: 5, finger: "3rd Finger", beat: 1.0, dur: 0.85, bow: "V", symbol: "♩", staffY: 81 },
+                  { note: "B4", string: "A4", semis: 2, finger: "1st Finger", beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 67 }
+                ]
+              },
+              {
+                name: "Phrase 3 (Courtly Turn)",
+                notes: [
+                  { note: "E5",  string: "E5", semis: 0, finger: "Open E",     beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 46 },
+                  { note: "C5",  string: "A4", semis: 3, finger: "Low 2nd",    beat: 1.0, dur: 0.42, bow: "V", symbol: "♪", staffY: 60 },
+                  { note: "D5",  string: "A4", semis: 5, finger: "3rd Finger", beat: 1.5, dur: 0.42, bow: "⊓", symbol: "♪", staffY: 53 },
+                  { note: "B4",  string: "A4", semis: 2, finger: "1st Finger", beat: 2.0, dur: 0.85, bow: "V", symbol: "♩", staffY: 67 }
+                ]
+              }
+            ]
+          },
+          {
+            title: "Spring (The Four Seasons) — A. Vivaldi",
+            bpm: 104,
+            phrases: [
+              {
+                name: "Phrase 1 (Birdsong Awakening)",
+                notes: [
+                  { note: "E4",  string: "D4", semis: 2, finger: "1st Finger", beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 95 },
+                  { note: "G♯4", string: "D4", semis: 6, finger: "High 3rd",   beat: 1.0, dur: 0.85, bow: "V", symbol: "♩", staffY: 81 },
+                  { note: "G♯4", string: "D4", semis: 6, finger: "High 3rd",   beat: 2.0, dur: 0.42, bow: "⊓", symbol: "♪", staffY: 81 },
+                  { note: "F♯4", string: "D4", semis: 4, finger: "High 2nd",   beat: 2.5, dur: 0.42, bow: "V", symbol: "♪", staffY: 88 },
+                  { note: "E4",  string: "D4", semis: 2, finger: "1st Finger", beat: 3.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 95 }
+                ]
+              },
+              {
+                name: "Phrase 2 (Sunlit Crest)",
+                notes: [
+                  { note: "B4",  string: "A4", semis: 2, finger: "1st Finger", beat: 0.0, dur: 1.25, bow: "⊓", symbol: "♩.", staffY: 67 },
+                  { note: "A4",  string: "A4", semis: 0, finger: "Open A",     beat: 1.5, dur: 0.42, bow: "V", symbol: "♪",  staffY: 74 },
+                  { note: "G♯4", string: "D4", semis: 6, finger: "High 3rd",   beat: 2.0, dur: 0.85, bow: "⊓", symbol: "♩",  staffY: 81 }
+                ]
+              },
+              {
+                name: "Phrase 3 (Joyful Echo)",
+                notes: [
+                  { note: "B4",  string: "A4", semis: 2, finger: "1st Finger", beat: 0.0, dur: 0.42, bow: "⊓", symbol: "♪", staffY: 67 },
+                  { note: "A4",  string: "A4", semis: 0, finger: "Open A",     beat: 0.5, dur: 0.42, bow: "V", symbol: "♪", staffY: 74 },
+                  { note: "G♯4", string: "D4", semis: 6, finger: "High 3rd",   beat: 1.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 81 },
+                  { note: "F♯4", string: "D4", semis: 4, finger: "High 2nd",   beat: 2.0, dur: 0.85, bow: "V", symbol: "♩", staffY: 88 }
+                ]
+              }
+            ]
+          }
+        ],
+        advanced: [
+          {
+            title: "Hungarian Dance No. 5 — J. Brahms",
+            bpm: 104,
+            phrases: [
+              {
+                name: "Phrase 1 (Passionate Dotted Leap)",
+                notes: [
+                  { note: "F♯4", string: "D4", semis: 4, finger: "High 2nd",   beat: 0.0, dur: 1.25, bow: "⊓", symbol: "♩.", staffY: 88 },
+                  { note: "B4",  string: "A4", semis: 2, finger: "1st Finger", beat: 1.5, dur: 0.42, bow: "V", symbol: "♪",  staffY: 67 },
+                  { note: "D5",  string: "A4", semis: 5, finger: "3rd Finger", beat: 2.0, dur: 1.25, bow: "⊓", symbol: "♩.", staffY: 53 },
+                  { note: "B4",  string: "A4", semis: 2, finger: "1st Finger", beat: 3.5, dur: 0.42, bow: "V", symbol: "♪",  staffY: 67 }
+                ]
+              },
+              {
+                name: "Phrase 2 (Fiery Turn)",
+                notes: [
+                  { note: "F♯4", string: "D4", semis: 4, finger: "High 2nd",   beat: 0.0,  dur: 0.65, bow: "⊓", symbol: "♪.", staffY: 88 },
+                  { note: "G4",  string: "D4", semis: 5, finger: "3rd Finger", beat: 0.75, dur: 0.22, bow: "V", symbol: "♬",  staffY: 81 },
+                  { note: "A4",  string: "A4", semis: 0, finger: "Open A",     beat: 1.0,  dur: 0.85, bow: "⊓", symbol: "♩",  staffY: 74 },
+                  { note: "F♯4", string: "D4", semis: 4, finger: "High 2nd",   beat: 2.0,  dur: 1.20, bow: "V", symbol: "♩",  staffY: 88 }
+                ]
+              },
+              {
+                name: "Phrase 3 (Dramatic Resolve)",
+                notes: [
+                  { note: "G4",  string: "D4", semis: 5, finger: "3rd Finger", beat: 0.0,  dur: 0.65, bow: "⊓", symbol: "♪.", staffY: 81 },
+                  { note: "E4",  string: "D4", semis: 2, finger: "1st Finger", beat: 0.75, dur: 0.22, bow: "V", symbol: "♬",  staffY: 95 },
+                  { note: "F♯4", string: "D4", semis: 4, finger: "High 2nd",   beat: 1.0,  dur: 0.85, bow: "⊓", symbol: "♩",  staffY: 88 },
+                  { note: "B3",  string: "G3", semis: 4, finger: "High 2nd",   beat: 2.0,  dur: 1.35, bow: "V", symbol: "𝅗𝅥",  staffY: 112 }
+                ]
+              }
+            ]
+          },
+          {
+            title: "Csárdás (Lassan) — V. Monti",
+            bpm: 94,
+            phrases: [
+              {
+                name: "Phrase 1 (Soulful Lament)",
+                notes: [
+                  { note: "A4", string: "A4", semis: 0, finger: "Open A",     beat: 0.0,  dur: 0.42, bow: "⊓", symbol: "♪",  staffY: 74 },
+                  { note: "F4", string: "D4", semis: 3, finger: "Low 2nd",    beat: 0.5,  dur: 1.15, bow: "V", symbol: "♩.", staffY: 88 },
+                  { note: "E4", string: "D4", semis: 2, finger: "1st Finger", beat: 1.75, dur: 0.22, bow: "⊓", symbol: "♬",  staffY: 95 },
+                  { note: "D4", string: "D4", semis: 0, finger: "Open D",     beat: 2.0,  dur: 1.25, bow: "V", symbol: "♩",  staffY: 102 }
+                ]
+              },
+              {
+                name: "Phrase 2 (Rising Rubato)",
+                notes: [
+                  { note: "E4",  string: "D4", semis: 2, finger: "1st Finger", beat: 0.0, dur: 0.42, bow: "⊓", symbol: "♪", staffY: 95 },
+                  { note: "F4",  string: "D4", semis: 3, finger: "Low 2nd",    beat: 0.5, dur: 0.42, bow: "V", symbol: "♪", staffY: 88 },
+                  { note: "A4",  string: "A4", semis: 0, finger: "Open A",     beat: 1.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 74 },
+                  { note: "B♭4", string: "A4", semis: 1, finger: "Low 1st",    beat: 2.0, dur: 1.25, bow: "V", symbol: "♩", staffY: 67 }
+                ]
+              },
+              {
+                name: "Phrase 3 (D-Minor Finale)",
+                notes: [
+                  { note: "A4",  string: "A4", semis: 0, finger: "Open A",     beat: 0.0, dur: 0.85, bow: "⊓", symbol: "♩", staffY: 74 },
+                  { note: "G4",  string: "D4", semis: 5, finger: "3rd Finger", beat: 1.0, dur: 0.42, bow: "V", symbol: "♪", staffY: 81 },
+                  { note: "F4",  string: "D4", semis: 3, finger: "Low 2nd",    beat: 1.5, dur: 0.42, bow: "⊓", symbol: "♪", staffY: 88 },
+                  { note: "D4",  string: "D4", semis: 0, finger: "Open D",     beat: 2.0, dur: 1.45, bow: "V", symbol: "𝅗𝅥", staffY: 102 }
+                ]
+              }
+            ]
+          }
+        ],
+        pro: [
+          {
+            title: "Caprice No. 24 (Theme) — N. Paganini",
+            bpm: 116,
+            phrases: [
+              {
+                name: "Phrase 1 (A-Minor Spark)",
+                notes: [
+                  { note: "A4", string: "A4", semis: 0, finger: "Open A",     beat: 0.0,  dur: 0.42, bow: "⊓", symbol: "♪", staffY: 74 },
+                  { note: "A4", string: "A4", semis: 0, finger: "Open A",     beat: 0.5,  dur: 0.22, bow: "V", symbol: "♬", staffY: 74 },
+                  { note: "C5", string: "A4", semis: 3, finger: "Low 2nd",    beat: 0.75, dur: 0.22, bow: "⊓", symbol: "♬", staffY: 60 },
+                  { note: "B4", string: "A4", semis: 2, finger: "1st Finger", beat: 1.0,  dur: 0.42, bow: "V", symbol: "♪", staffY: 67 },
+                  { note: "A4", string: "A4", semis: 0, finger: "Open A",     beat: 1.5,  dur: 0.42, bow: "⊓", symbol: "♪", staffY: 74 }
+                ]
+              },
+              {
+                name: "Phrase 2 (Dominant Leap)",
+                notes: [
+                  { note: "E5",  string: "E5", semis: 0, finger: "Open E",     beat: 0.0,  dur: 0.42, bow: "⊓", symbol: "♪", staffY: 46 },
+                  { note: "E5",  string: "E5", semis: 0, finger: "Open E",     beat: 0.5,  dur: 0.22, bow: "V", symbol: "♬", staffY: 46 },
+                  { note: "F5",  string: "E5", semis: 1, finger: "Low 1st",    beat: 0.75, dur: 0.22, bow: "⊓", symbol: "♬", staffY: 39 },
+                  { note: "E5",  string: "E5", semis: 0, finger: "Open E",     beat: 1.0,  dur: 0.42, bow: "V", symbol: "♪", staffY: 46 },
+                  { note: "D5",  string: "A4", semis: 5, finger: "3rd Finger", beat: 1.5,  dur: 0.42, bow: "⊓", symbol: "♪", staffY: 53 }
+                ]
+              },
+              {
+                name: "Phrase 3 (Virtuoso Cadence)",
+                notes: [
+                  { note: "C5",  string: "A4", semis: 3, finger: "Low 2nd",    beat: 0.0, dur: 0.42, bow: "⊓", symbol: "♪", staffY: 60 },
+                  { note: "B4",  string: "A4", semis: 2, finger: "1st Finger", beat: 0.5, dur: 0.42, bow: "V", symbol: "♪", staffY: 67 },
+                  { note: "G♯4", string: "D4", semis: 6, finger: "High 3rd",   beat: 1.0, dur: 0.42, bow: "⊓", symbol: "♪", staffY: 81 },
+                  { note: "A4",  string: "A4", semis: 0, finger: "Open A",     beat: 1.5, dur: 0.85, bow: "V", symbol: "♩", staffY: 74 }
+                ]
+              }
+            ]
+          },
+          {
+            title: "Libertango (3+3+2 Clave) — A. Piazzolla",
+            bpm: 120,
+            phrases: [
+              {
+                name: "Phrase 1 (Syncopated Clave)",
+                notes: [
+                  { note: "E5", string: "E5", semis: 0, finger: "Open E",     beat: 0.0,  dur: 0.68, bow: "⊓", symbol: "♪.", staffY: 46 },
+                  { note: "F5", string: "E5", semis: 1, finger: "Low 1st",    beat: 0.75, dur: 0.68, bow: "V", symbol: "♪.", staffY: 39 },
+                  { note: "E5", string: "E5", semis: 0, finger: "Open E",     beat: 1.5,  dur: 0.42, bow: "⊓", symbol: "♪",  staffY: 46 },
+                  { note: "D5", string: "A4", semis: 5, finger: "3rd Finger", beat: 2.0,  dur: 0.85, bow: "V", symbol: "♩",  staffY: 53 }
+                ]
+              },
+              {
+                name: "Phrase 2 (Chromatic Drive)",
+                notes: [
+                  { note: "C5", string: "A4", semis: 3, finger: "Low 2nd",    beat: 0.0,  dur: 0.68, bow: "⊓", symbol: "♪.", staffY: 60 },
+                  { note: "B4", string: "A4", semis: 2, finger: "1st Finger", beat: 0.75, dur: 0.68, bow: "V", symbol: "♪.", staffY: 67 },
+                  { note: "A4", string: "A4", semis: 0, finger: "Open A",     beat: 1.5,  dur: 0.42, bow: "⊓", symbol: "♪",  staffY: 74 },
+                  { note: "B4", string: "A4", semis: 2, finger: "1st Finger", beat: 2.0,  dur: 0.85, bow: "V", symbol: "♩",  staffY: 67 }
+                ]
+              },
+              {
+                name: "Phrase 3 (Tango Resolution)",
+                notes: [
+                  { note: "C5",  string: "A4", semis: 3, finger: "Low 2nd",    beat: 0.0, dur: 0.42, bow: "⊓", symbol: "♪", staffY: 60 },
+                  { note: "B4",  string: "A4", semis: 2, finger: "1st Finger", beat: 0.5, dur: 0.42, bow: "V", symbol: "♪", staffY: 67 },
+                  { note: "G♯4", string: "D4", semis: 6, finger: "High 3rd",   beat: 1.0, dur: 0.42, bow: "⊓", symbol: "♪", staffY: 81 },
+                  { note: "A4",  string: "A4", semis: 0, finger: "Open A",     beat: 1.5, dur: 1.15, bow: "V", symbol: "𝅗𝅥", staffY: 74 }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      /* ========================================================================
+         3. APPLICATION STATE & HELPERS
+         ======================================================================== */
+      const synth = new ViolinStudioSynth();
+
+      const state = {
+        mode: "tone", // "tone" | "harmony" | "rhythm" | "repertoire"
+        rhythmPack: "beginner", // "beginner" | "intermediate" | "advanced" | "pro"
+        round: 0,
+        maxRounds: 5,
+        score: 0,
+        streak: 0,
+        results: [],
+        roundLocked: false,
+        showTapes: true,
+        showGuideDot: false,
+
+        // Fingerboard state
+        activeString: VIOLIN_STRINGS[1], // D4
+        droneString: null,
+        targetCents: 400,
+        userCents: 200,
+        targetNoteLabel: "F♯4",
+        targetFingerLabel: "High 2nd Finger",
+        targetIntervalLabel: "",
+        isBowing: false,
+
+        // Rhythm state
+        rhythmPattern: null,
+        rhythmTaps: [],
+        rhythmDemoRunning: false,
+        rhythmStartMs: 0,
+        activeTapStartMs: 0,
+        rhythmTimers: [],
+        particles: [],
+
+        // Repertoire Song Builder state
+        repSongIndex: 0,
+        repPhraseIndex: 0,
+        repStage: "tune", // "tune" | "rhythm" | "complete"
+        repNoteIndex: 0,
+        repTunedNotes: [], // { note, string, targetFreq, userFreq, centsOff, pitchAcc }
+        repPhraseRecords: [] // { phraseName, pitchAcc, rhythmAcc, combinedAcc, notes, taps }
+      };
+
+      const el = {
+        roundDots: document.getElementById("roundDots"),
+        scoreDisplay: document.getElementById("scoreDisplay"),
+        streakDisplay: document.getElementById("streakDisplay"),
+        muteBtn: document.getElementById("muteBtn"),
+        mochiSpeech: document.getElementById("mochiSpeech"),
+        moodBadge: document.getElementById("moodBadge"),
+        mochiEyesDefault: document.getElementById("mochiEyesDefault"),
+        mochiEyesHappy: document.getElementById("mochiEyesHappy"),
+        mochiBowArm: document.getElementById("mochiBowArm"),
+        rhythmPackBar: document.getElementById("rhythmPackBar"),
+        repertoireZone: document.getElementById("repertoireZone"),
+        repSongSelect: document.getElementById("repSongSelect"),
+        repSheetTitle: document.getElementById("repSheetTitle"),
+        repStageBadge: document.getElementById("repStageBadge"),
+        repSheetSvg: document.getElementById("repSheetSvg"),
+        repFinaleCard: document.getElementById("repFinaleCard"),
+        repFinaleTitle: document.getElementById("repFinaleTitle"),
+        repFinaleChips: document.getElementById("repFinaleChips"),
+        repFinaleSub: document.getElementById("repFinaleSub"),
+        repPlayUserBtn: document.getElementById("repPlayUserBtn"),
+        repPlayIdealBtn: document.getElementById("repPlayIdealBtn"),
+        repNextSongBtn: document.getElementById("repNextSongBtn"),
+        repPhraseBreakdownList: document.getElementById("repPhraseBreakdownList"),
+        activePracticeArea: document.getElementById("activePracticeArea"),
+        reportScreen: document.getElementById("reportScreen"),
+        reportMainTitle: document.getElementById("reportMainTitle"),
+        reportSummaryChips: document.getElementById("reportSummaryChips"),
+        reportList: document.getElementById("reportList"),
+        reportCopyBtn: document.getElementById("reportCopyBtn"),
+        reportNewRecitalBtn: document.getElementById("reportNewRecitalBtn"),
+        promptKicker: document.getElementById("promptKicker"),
+        promptTitle: document.getElementById("promptTitle"),
+        promptSub: document.getElementById("promptSub"),
+        hearRefBtn: document.getElementById("hearRefBtn"),
+        bowHoldBtn: document.getElementById("bowHoldBtn"),
+        canvas: document.getElementById("studioCanvas"),
+        canvasReadout: document.getElementById("canvasReadout"),
+        fingerboardToggles: document.getElementById("fingerboardToggles"),
+        tapesToggleBtn: document.getElementById("tapesToggleBtn"),
+        guideDotToggleBtn: document.getElementById("guideDotToggleBtn"),
+        fingerboardWrapper: document.getElementById("fingerboardWrapper"),
+        fingerTapes: document.getElementById("fingerTapes"),
+        guideGhostPin: document.getElementById("guideGhostPin"),
+        targetRevealPin: document.getElementById("targetRevealPin"),
+        fingerNode: document.getElementById("fingerNode"),
+        fingerNoteText: document.getElementById("fingerNoteText"),
+        rhythmZone: document.getElementById("rhythmZone"),
+        bowStrokeStrip: document.getElementById("bowStrokeStrip"),
+        bowTapPad: document.getElementById("bowTapPad"),
+        resultBanner: document.getElementById("resultBanner"),
+        resultHeadline: document.getElementById("resultHeadline"),
+        resultDetail: document.getElementById("resultDetail"),
+        resultPoints: document.getElementById("resultPoints"),
+        lockInBtn: document.getElementById("lockInBtn"),
+        nextRoundBtn: document.getElementById("nextRoundBtn"),
+        restartRecitalBtn: document.getElementById("restartRecitalBtn"),
+        summaryModal: document.getElementById("summaryModal"),
+        summarySubtitle: document.getElementById("summarySubtitle"),
+        recitalScorecardText: document.getElementById("recitalScorecardText"),
+        copyScorecardBtn: document.getElementById("copyScorecardBtn"),
+        okayModalBtn: document.getElementById("okayModalBtn")
+      };
+
+      const ctx = el.canvas.getContext("2d");
+
+      function centsToFreq(baseFreq, cents) {
+        return baseFreq * Math.pow(2, cents / 1200);
+      }
+
+      function freqToCents(baseFreq, targetFreq) {
+        return 1200 * Math.log2(targetFreq / baseFreq);
+      }
+
+      // Maps 0..750 cents above open string to horizontal % (5% = Ivory Nut, 85% = 4th finger)
+      function centsToBoardPct(cents) {
+        const clamped = Math.max(0, Math.min(750, cents));
+        return 5 + (clamped / 750) * 80;
+      }
+
+      function boardPctToCents(pct) {
+        return Math.max(0, Math.min(750, ((pct - 5) / 80) * 750));
+      }
+
+      function getNoteInfoAtCents(stringObj, centsFromOpen) {
+        const nearestSemi = Math.round(centsFromOpen / 100);
+        const offsetFromNearest = Math.round(centsFromOpen - nearestSemi * 100);
+        const noteNames = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"];
+        const midi = Math.round(69 + 12 * Math.log2(centsToFreq(stringObj.freq, nearestSemi * 100) / 440));
+        const name = noteNames[((midi % 12) + 12) % 12];
+        const octave = Math.floor(midi / 12) - 1;
+        return {
+          noteName: `${name}${octave}`,
+          centOffset: offsetFromNearest
+        };
+      }
+
+      function setMaestroMood(mood, message, chirp = false) {
+        el.mochiSpeech.textContent = message;
+        const happyEyes = mood === "cheering" || mood === "happy";
+        el.mochiEyesDefault.style.display = happyEyes ? "none" : "inline";
+        el.mochiEyesHappy.style.display = happyEyes ? "inline" : "none";
+
+        const labels = {
+          happy: "Smiling ♪",
+          cheering: "Bravo!! ★",
+          listening: "Listening closely...",
+          thinking: "Encouraging ♥"
+        };
+        el.moodBadge.textContent = labels[mood] || "Ready ♪";
+        if (chirp) synth.playBunnyChirp(mood);
+      }
+
+      function spawnParticles(count = 16) {
+        const glyphs = ["♪", "♫", "✦", "🌸"];
+        for (let i = 0; i < count; i++) {
+          state.particles.push({
+            x: Math.random() * el.canvas.width,
+            y: el.canvas.height + 10,
+            vx: (Math.random() - 0.5) * 1.4,
+            vy: -(1.2 + Math.random() * 2.2),
+            alpha: 1,
+            glyph: glyphs[i % glyphs.length]
+          });
+        }
+      }
+
+      function clearRhythmTimers() {
+        state.rhythmTimers.forEach((id) => clearTimeout(id));
+        state.rhythmTimers = [];
+      }
+
+      /* ========================================================================
+         4. ROUND SETUP & AUDIO DEMONSTRATIONS
+         ======================================================================== */
+      function renderRoundDots() {
+        el.roundDots.innerHTML = "";
+        if (state.mode === "repertoire") {
+          for (let i = 0; i < 3; i++) {
+            const dot = document.createElement("div");
+            dot.className = "round-dot";
+            if (state.repPhraseRecords[i]) {
+              const acc = state.repPhraseRecords[i].combinedAcc;
+              dot.classList.add(acc >= 85 ? "perfect" : acc >= 60 ? "good" : "miss");
+            } else if (i === state.repPhraseIndex && state.repStage !== "complete") {
+              dot.classList.add("active");
+            }
+            el.roundDots.appendChild(dot);
+          }
+          return;
+        }
+        for (let i = 0; i < state.maxRounds; i++) {
+          const dot = document.createElement("div");
+          dot.className = "round-dot";
+          if (state.results[i]) {
+            dot.classList.add(state.results[i].rating);
+          } else if (i === state.round) {
+            dot.classList.add("active");
+          }
+          el.roundDots.appendChild(dot);
+        }
+      }
+
+      function highlightStrings(activeName, droneName = null) {
+        document.querySelectorAll(".string-lane").forEach((lane) => {
+          const s = lane.dataset.string;
+          lane.classList.toggle("active-string", s === activeName);
+          lane.classList.toggle("drone-string", s === droneName);
+        });
+
+        const strObj = VIOLIN_STRINGS.find((s) => s.name === activeName) || VIOLIN_STRINGS[1];
+        const laneTopPct = ((strObj.laneIndex * (110 / 3) + 13) / 136) * 100;
+        el.fingerNode.style.top = `${laneTopPct}%`;
+        el.targetRevealPin.style.top = `${laneTopPct}%`;
+        el.guideGhostPin.style.top = `${laneTopPct}%`;
+      }
+
+      function updateFingerUI() {
+        const pct = centsToBoardPct(state.userCents);
+        el.fingerNode.style.left = `${pct}%`;
+
+        const info = getNoteInfoAtCents(state.activeString, state.userCents);
+        el.fingerNoteText.textContent = info.noteName;
+        const sign = info.centOffset > 0 ? "+" : "";
+        const centsSuffix = state.roundLocked ? ` (${sign}${info.centOffset}¢)` : "";
+        el.fingerNode.classList.toggle("active-bow", state.isBowing);
+
+        const targetPct = centsToBoardPct(state.targetCents);
+        el.guideGhostPin.style.left = `${targetPct}%`;
+        el.guideGhostPin.style.display = state.showGuideDot && !state.roundLocked ? "block" : "none";
+
+        if (state.isBowing) {
+          const freq = centsToFreq(state.activeString.freq, state.userCents);
+          synth.updateBowedVoice("userNote", freq);
+        }
+
+        if (state.mode === "tone") {
+          el.canvasReadout.textContent = `${state.activeString.short} STRING • ${info.noteName}${centsSuffix}`;
+        } else if (state.mode === "harmony") {
+          el.canvasReadout.textContent = `DOUBLE STOP: OPEN ${state.droneString.name} + ${info.noteName}${centsSuffix}`;
+        } else if (state.mode === "repertoire" && state.repStage === "tune") {
+          el.canvasReadout.textContent = `PHRASE ${state.repPhraseIndex + 1} • NOTE ${state.repNoteIndex + 1}: ${info.noteName}${centsSuffix}`;
+        }
+      }
+
+      /* ========================================================================
+         4B. REPERTOIRE SONG BUILDER LOGIC (SHEET MUSIC, TUNE, RHYTHM, PLAYBACK)
+         ======================================================================== */
+      function getCurrentRepSong() {
+        const list = REPERTOIRE_PACKS[state.rhythmPack] || REPERTOIRE_PACKS.beginner;
+        return list[state.repSongIndex % list.length];
+      }
+
+      function populateRepSongSelect() {
+        const list = REPERTOIRE_PACKS[state.rhythmPack] || REPERTOIRE_PACKS.beginner;
+        el.repSongSelect.innerHTML = "";
+        list.forEach((song, idx) => {
+          const opt = document.createElement("option");
+          opt.value = String(idx);
+          opt.textContent = song.title;
+          if (idx === state.repSongIndex) opt.selected = true;
+          el.repSongSelect.appendChild(opt);
+        });
+      }
+
+      function renderSheetMusicSVG() {
+        const song = getCurrentRepSong();
+        const phrase = song.phrases[state.repPhraseIndex];
+        const svg = el.repSheetSvg;
+        const w = 640;
+        let markup = "";
+
+        // 5 Treble Staff Lines (E4=95, G4=81, B4=67, D5=53, F5=39)
+        const staffYs = [39, 53, 67, 81, 95];
+        staffYs.forEach((y) => {
+          markup += `<line x1="24" y1="${y}" x2="${w - 24}" y2="${y}" stroke="#8C6D53" stroke-width="1.4"/>`;
+        });
+
+        // Double Barline at right end
+        markup += `<line x1="${w - 30}" y1="39" x2="${w - 30}" y2="95" stroke="#4A2311" stroke-width="1.5"/>`;
+        markup += `<line x1="${w - 24}" y1="39" x2="${w - 24}" y2="95" stroke="#4A2311" stroke-width="3.2"/>`;
+
+        // Treble Clef Glyph
+        markup += `<text x="34" y="88" font-size="62" fill="#4A2311" font-family="serif">𝄞</text>`;
+
+        const count = phrase.notes.length;
+        const startX = 115;
+        const spanX = w - 175;
+        const stepX = count > 1 ? spanX / (count - 1) : 0;
+
+        phrase.notes.forEach((n, idx) => {
+          const cx = count > 1 ? startX + idx * stepX : startX + spanX / 2;
+          const cy = n.staffY;
+          const isCurrentTune = state.repStage === "tune" && idx === state.repNoteIndex;
+          const tunedObj = state.repTunedNotes[idx];
+          const isDoneTune = Boolean(tunedObj);
+
+          let fill = "#2D1E17";
+          if (isCurrentTune) fill = "#D84367";
+          else if (isDoneTune) fill = "#2E9E6B";
+
+          // Ledger line for C4 / B3 or high A5 if needed
+          if (cy >= 109) {
+            markup += `<line x1="${cx - 15}" y1="109" x2="${cx + 15}" y2="109" stroke="#8C6D53" stroke-width="1.4"/>`;
+          }
+
+          // Highlight ring on active note
+          if (isCurrentTune) {
+            markup += `<circle cx="${cx}" cy="${cy}" r="15" fill="rgba(216, 67, 103, 0.16)" stroke="#D84367" stroke-width="1.6" stroke-dasharray="3 2"/>`;
+          }
+
+          // Bowing symbol above staff
+          markup += `<text x="${cx}" y="20" text-anchor="middle" font-size="13" font-weight="800" fill="#8C4419" font-family="monospace">${n.bow}</text>`;
+
+          // Notehead (open for half note 𝅗𝅥, filled otherwise)
+          const isOpenHead = n.symbol === "𝅗𝅥";
+          markup += `<ellipse cx="${cx}" cy="${cy}" rx="8.5" ry="6" transform="rotate(-18 ${cx} ${cy})" fill="${isOpenHead ? "#FFFDF8" : fill}" stroke="${fill}" stroke-width="2.2"/>`;
+
+          // Note stem
+          if (cy <= 67) {
+            markup += `<line x1="${cx - 7.5}" y1="${cy + 2}" x2="${cx - 7.5}" y2="${cy + 34}" stroke="${fill}" stroke-width="2"/>`;
+          } else {
+            markup += `<line x1="${cx + 7.5}" y1="${cy - 2}" x2="${cx + 7.5}" y2="${cy - 34}" stroke="${fill}" stroke-width="2"/>`;
+          }
+
+          // Note name & rhythm symbol below staff
+          markup += `<text x="${cx}" y="116" text-anchor="middle" font-size="12" font-weight="800" fill="${fill}" font-family="sans-serif">${n.note} (${n.symbol})</text>`;
+        });
+
+        svg.innerHTML = markup;
+      }
+
+      function updateRepStepperUI() {
+        for (let i = 0; i < 3; i++) {
+          const pill = document.getElementById(`repStep${i}`);
+          if (!pill) continue;
+          pill.classList.remove("active", "done");
+          if (i < state.repPhraseIndex || state.repStage === "complete") {
+            pill.classList.add("done");
+          } else if (i === state.repPhraseIndex) {
+            pill.classList.add("active");
+          }
+        }
+        renderRoundDots();
+      }
+
+      function setupRepertoireStep() {
+        synth.stopAllVoices();
+        clearRhythmTimers();
+        state.roundLocked = false;
+        state.isBowing = false;
+        state.rhythmDemoRunning = false;
+        state.rhythmTaps = [];
+        state.rhythmStartMs = 0;
+        state.activeTapStartMs = 0;
+
+        el.rhythmPackBar.style.display = "flex";
+        el.repertoireZone.classList.add("visible");
+        el.repFinaleCard.classList.remove("visible");
+        el.activePracticeArea.style.display = "flex";
+        el.reportScreen.classList.remove("visible");
+        el.resultBanner.classList.remove("visible", "warn");
+        el.targetRevealPin.style.display = "none";
+        el.nextRoundBtn.style.display = "none";
+
+        updateRepStepperUI();
+        renderSheetMusicSVG();
+
+        const song = getCurrentRepSong();
+        const phrase = song.phrases[state.repPhraseIndex];
+
+        if (state.repStage === "tune") {
+          const noteObj = phrase.notes[state.repNoteIndex];
+          const strObj = VIOLIN_STRINGS.find((s) => s.name === noteObj.string) || VIOLIN_STRINGS[1];
+
+          state.activeString = strObj;
+          state.droneString = null;
+          state.targetCents = noteObj.semis * 100;
+          state.targetNoteLabel = noteObj.note;
+          state.targetFingerLabel = noteObj.finger;
+          state.userCents = Math.max(30, Math.min(720, state.targetCents + (Math.random() > 0.5 ? 105 : -105)));
+
+          el.fingerboardWrapper.style.display = "block";
+          el.rhythmZone.style.display = "none";
+          el.fingerboardToggles.style.display = "flex";
+          el.bowHoldBtn.style.display = "inline-flex";
+          el.lockInBtn.style.display = "inline-flex";
+          el.lockInBtn.textContent = `✓ Lock In Note ${state.repNoteIndex + 1} of ${phrase.notes.length}`;
+          el.hearRefBtn.textContent = "🔊 Hear Target Note";
+
+          el.repSheetTitle.textContent = `Phrase ${state.repPhraseIndex + 1} of 3 • ${phrase.name}`;
+          el.repStageBadge.textContent = `Step 1: Tune Note ${state.repNoteIndex + 1} / ${phrase.notes.length}`;
+
+          highlightStrings(strObj.name, null);
+          el.promptKicker.textContent = `REPERTOIRE BUILDER • PHRASE ${state.repPhraseIndex + 1} OF 3 • STEP 1: TUNE TONES`;
+          el.promptTitle.textContent = `Tune ${noteObj.note} (${noteObj.finger} on ${strObj.short} String)`;
+          el.promptSub.textContent = `Match ${noteObj.note} on the fingerboard. Whatever pitch you lock in will be saved into your phrase performance!`;
+
+          setMaestroMood("listening", `Phrase ${state.repPhraseIndex + 1}, Note ${state.repNoteIndex + 1}: Let's tune ${noteObj.note} on the ${strObj.short} string!`);
+          updateFingerUI();
+          setTimeout(() => playReferenceAudio(), 200);
+
+        } else if (state.repStage === "rhythm") {
+          el.fingerboardWrapper.style.display = "none";
+          el.rhythmZone.style.display = "flex";
+          el.fingerboardToggles.style.display = "none";
+          el.bowHoldBtn.style.display = "none";
+          el.lockInBtn.style.display = "none";
+          el.hearRefBtn.textContent = "🔊 Hear Phrase Rhythm";
+
+          el.repSheetTitle.textContent = `Phrase ${state.repPhraseIndex + 1} of 3 • ${phrase.name}`;
+          el.repStageBadge.textContent = "Step 2: Play Your Tuned Notes in Rhythm";
+
+          // Build rhythm pattern from the phrase using the player's own tuned frequencies
+          state.rhythmPattern = {
+            title: phrase.name,
+            bpm: song.bpm,
+            notes: phrase.notes.map((n, idx) => ({
+              beat: n.beat,
+              dur: n.dur,
+              bow: n.bow,
+              symbol: n.symbol,
+              note: n.note,
+              semi: n.semis,
+              customFreq: state.repTunedNotes[idx].userFreq
+            }))
+          };
+
+          renderBowStrokeChips();
+          el.promptKicker.textContent = `REPERTOIRE BUILDER • PHRASE ${state.repPhraseIndex + 1} OF 3 • STEP 2: PLAY IN RHYTHM`;
+          el.promptTitle.textContent = `Bow "${phrase.name}" Using Your Tuned Notes`;
+          el.promptSub.textContent = `Listen to the rhythm, then tap & hold the Bow Pad (or Spacebar) to play the ${phrase.notes.length} notes you tuned!`;
+          el.canvasReadout.textContent = `PHRASE STROKES: 0 / ${phrase.notes.length}`;
+
+          setMaestroMood("happy", `All ${phrase.notes.length} notes tuned! Now bow them in rhythm—you'll hear your exact tuned pitches as you play!`);
+          setTimeout(() => playReferenceAudio(), 220);
+        }
+      }
+
+      function handleRepertoireToneLockIn() {
+        const song = getCurrentRepSong();
+        const phrase = song.phrases[state.repPhraseIndex];
+        const noteObj = phrase.notes[state.repNoteIndex];
+        const strObj = state.activeString;
+
+        const targetFreq = centsToFreq(strObj.freq, state.targetCents);
+        const userFreq = centsToFreq(strObj.freq, state.userCents);
+        const centsOff = Math.round(state.userCents - state.targetCents);
+        const pitchAcc = Math.max(0, Math.round(100 * Math.exp(-Math.pow(Math.abs(centsOff) / 26, 2))));
+
+        state.repTunedNotes.push({
+          note: noteObj.note,
+          string: noteObj.string,
+          finger: noteObj.finger,
+          targetFreq,
+          userFreq,
+          centsOff,
+          pitchAcc,
+          beat: noteObj.beat,
+          dur: noteObj.dur,
+          bow: noteObj.bow,
+          symbol: noteObj.symbol
+        });
+
+        spawnParticles(8);
+
+        if (state.repNoteIndex + 1 < phrase.notes.length) {
+          state.repNoteIndex += 1;
+          setupRepertoireStep();
+        } else {
+          state.repStage = "rhythm";
+          setupRepertoireStep();
+        }
+      }
+
+      function evaluateRepertoirePhraseRhythm() {
+        if (state.roundLocked) return;
+        state.roundLocked = true;
+
+        const song = getCurrentRepSong();
+        const phrase = song.phrases[state.repPhraseIndex];
+        const secPerBeat = 60 / song.bpm;
+
+        let rhythmSum = 0;
+        phrase.notes.forEach((exp, i) => {
+          const tap = state.rhythmTaps[i];
+          if (!tap) return;
+          const expStart = exp.beat * secPerBeat;
+          const expDur = exp.dur * secPerBeat;
+          const onsetErr = Math.abs(tap.startSec - expStart);
+          const durErr = Math.abs(tap.durSec - expDur);
+          const onsetScore = Math.max(0, 1 - onsetErr / 0.36);
+          const durScore = Math.max(0, 1 - durErr / 0.44);
+          rhythmSum += onsetScore * 0.68 + durScore * 0.32;
+        });
+
+        const rhythmAcc = Math.max(0, Math.min(100, Math.round((rhythmSum / phrase.notes.length) * 100)));
+        const pitchAcc = Math.round(
+          state.repTunedNotes.reduce((acc, n) => acc + n.pitchAcc, 0) / state.repTunedNotes.length
+        );
+        const combinedAcc = Math.round(pitchAcc * 0.55 + rhythmAcc * 0.45);
+        const pts = combinedAcc * 10;
+        state.score += pts;
+        if (combinedAcc >= 70) state.streak += 1;
+        else state.streak = 0;
+
+        el.scoreDisplay.textContent = state.score;
+        el.streakDisplay.textContent = state.streak;
+
+        state.repPhraseRecords.push({
+          phraseName: phrase.name,
+          bpm: song.bpm,
+          pitchAcc,
+          rhythmAcc,
+          combinedAcc,
+          notes: [...state.repTunedNotes],
+          taps: [...state.rhythmTaps]
+        });
+
+        renderRoundDots();
+        spawnParticles(combinedAcc >= 80 ? 18 : 10);
+
+        el.resultHeadline.textContent = `Phrase ${state.repPhraseIndex + 1} Complete! (${combinedAcc}% Overall)`;
+        el.resultDetail.textContent = `Intonation Match: ${pitchAcc}% • Rhythm & Bowing Match: ${rhythmAcc}%`;
+        el.resultPoints.textContent = `+${pts}`;
+        el.resultBanner.classList.toggle("warn", combinedAcc < 70);
+        el.resultBanner.classList.add("visible");
+
+        el.nextRoundBtn.style.display = "inline-flex";
+        el.nextRoundBtn.textContent = state.repPhraseIndex + 1 >= 3 ? "Finish Piece & Compare ★" : "Next Phrase →";
+        setMaestroMood(combinedAcc >= 80 ? "cheering" : "happy", `Phrase ${state.repPhraseIndex + 1} recorded! Pitch: ${pitchAcc}%, Rhythm: ${rhythmAcc}%.`, true);
+      }
+
+      function showRepertoireFinale() {
+        state.repStage = "complete";
+        updateRepStepperUI();
+        el.activePracticeArea.style.display = "none";
+        el.repertoireZone.classList.remove("visible");
+        el.repFinaleCard.classList.add("visible");
+
+        const song = getCurrentRepSong();
+        const avgPitch = Math.round(state.repPhraseRecords.reduce((a, p) => a + p.pitchAcc, 0) / 3);
+        const avgRhythm = Math.round(state.repPhraseRecords.reduce((a, p) => a + p.rhythmAcc, 0) / 3);
+        const overall = Math.round(state.repPhraseRecords.reduce((a, p) => a + p.combinedAcc, 0) / 3);
+
+        el.repFinaleTitle.textContent = `${song.title} — Complete Performance`;
+        el.repFinaleChips.innerHTML = `
+          <div class="report-chip">Overall Score: ${overall}%</div>
+          <div class="report-chip">Intonation: ${avgPitch}%</div>
+          <div class="report-chip">Rhythm: ${avgRhythm}%</div>
+        `;
+
+        el.repPhraseBreakdownList.innerHTML = "";
+        state.repPhraseRecords.forEach((rec, idx) => {
+          const noteSummary = rec.notes
+            .map((n) => `${n.note} (${n.centsOff === 0 ? "0¢" : `${n.centsOff > 0 ? "+" : ""}${n.centsOff}¢`})`)
+            .join(" → ");
+          const tier = rec.combinedAcc >= 85 ? "perfect" : rec.combinedAcc >= 60 ? "good" : "miss";
+
+          const item = document.createElement("div");
+          item.className = "report-item";
+          item.innerHTML = `
+            <div class="report-item-top">
+              <strong style="font-size: 0.94rem; color: var(--ink-dark);">Phrase ${idx + 1}: ${rec.phraseName}</strong>
+              <span class="report-badge ${tier}">${rec.combinedAcc}% Overall</span>
+            </div>
+            <div class="report-compare-grid">
+              <div class="compare-box">
+                <span class="compare-label">Your Tuned Pitches</span>
+                <strong>${noteSummary}</strong>
+              </div>
+              <div class="compare-box">
+                <span class="compare-label">Phrase Breakdown</span>
+                <strong>Intonation: ${rec.pitchAcc}% • Rhythm: ${rec.rhythmAcc}%</strong>
+              </div>
+            </div>
+          `;
+          el.repPhraseBreakdownList.appendChild(item);
+        });
+
+        setMaestroMood("cheering", `Bravo! You built and performed all 3 phrases of ${song.title}! Compare your recording with my reference playback below!`, true);
+      }
+
+      function playFullRepertoireComparison(useUserPerformance) {
+        synth.stopAllVoices();
+        clearRhythmTimers();
+        const song = getCurrentRepSong();
+        const secPerBeat = 60 / song.bpm;
+        let cursorSec = 0.1;
+
+        el.mochiBowArm.classList.add("playing");
+        setMaestroMood(
+          "listening",
+          useUserPerformance
+            ? "Playing back YOUR full 3-phrase performance with your exact tuned pitches and timing..."
+            : "Playing Maestro Mochi's reference performance in pure intonation and steady tempo..."
+        );
+
+        state.repPhraseRecords.forEach((rec) => {
+          rec.notes.forEach((n, idx) => {
+            const freq = useUserPerformance ? n.userFreq : n.targetFreq;
+            const tap = rec.taps[idx];
+            const startSec = useUserPerformance && tap ? cursorSec + tap.startSec : cursorSec + n.beat * secPerBeat;
+            const durSec = useUserPerformance && tap ? tap.durSec : n.dur * secPerBeat;
+            synth.playScheduledViolinNote(freq, durSec, n.bow === "⊓", startSec);
+          });
+          const lastNote = rec.notes[rec.notes.length - 1];
+          cursorSec += (lastNote.beat + lastNote.dur + 0.75) * secPerBeat;
+        });
+
+        const tEnd = setTimeout(() => {
+          el.mochiBowArm.classList.remove("playing");
+        }, cursorSec * 1000);
+        state.rhythmTimers.push(tEnd);
+      }
+
+      function startRepertoireSession(resetSongIdx = false) {
+        if (resetSongIdx) state.repSongIndex = 0;
+        populateRepSongSelect();
+        state.repPhraseIndex = 0;
+        state.repStage = "tune";
+        state.repNoteIndex = 0;
+        state.repTunedNotes = [];
+        state.repPhraseRecords = [];
+        setupRepertoireStep();
+      }
+
+      function setupRound() {
+        if (state.mode === "repertoire") {
+          startRepertoireSession(false);
+          return;
+        }
+        el.repertoireZone.classList.remove("visible");
+        el.repFinaleCard.classList.remove("visible");
+        el.lockInBtn.textContent = "✓ Lock In Note";
+        synth.stopAllVoices();
+        clearRhythmTimers();
+        state.roundLocked = false;
+        state.isBowing = false;
+        state.rhythmDemoRunning = false;
+        state.rhythmTaps = [];
+        state.rhythmStartMs = 0;
+        state.activeTapStartMs = 0;
+
+        el.resultBanner.classList.remove("visible", "warn");
+        el.targetRevealPin.style.display = "none";
+        el.lockInBtn.style.display = "inline-flex";
+        el.nextRoundBtn.style.display = "none";
+        el.activePracticeArea.style.display = "flex";
+        el.reportScreen.classList.remove("visible");
+        renderRoundDots();
+
+        if (state.mode === "tone") {
+          el.rhythmPackBar.style.display = "none";
+          el.fingerboardWrapper.style.display = "block";
+          el.rhythmZone.style.display = "none";
+          el.fingerboardToggles.style.display = "flex";
+          el.bowHoldBtn.style.display = "inline-flex";
+          el.hearRefBtn.textContent = "🔊 Hear Reference Note";
+
+          const pick = TONE_NOTES[Math.floor(Math.random() * TONE_NOTES.length)];
+          const strObj = VIOLIN_STRINGS.find((s) => s.name === pick.string);
+
+          state.activeString = strObj;
+          state.droneString = null;
+          state.targetCents = pick.semis * 100;
+          state.targetNoteLabel = pick.note;
+          state.targetFingerLabel = pick.finger;
+          state.targetIntervalLabel = "";
+          state.userCents = Math.max(40, Math.min(720, state.targetCents + (Math.random() > 0.5 ? 110 : -110)));
+
+          highlightStrings(strObj.name, null);
+          el.promptKicker.textContent = `ROUND ${state.round + 1} OF ${state.maxRounds} • TONE & FINGERBOARD POSITION`;
+          el.promptTitle.textContent = `Play ${pick.note} — ${pick.finger} on ${strObj.short} String`;
+          el.promptSub.textContent = `Slide along the ${strObj.short} string until your note matches Maestro Mochi's reference pitch, then click Lock In Note.`;
+
+          setMaestroMood("listening", `Find ${pick.note} with your ${pick.finger} on the ${strObj.short} string! Listen to my reference note and watch the soundwaves settle.`);
+          updateFingerUI();
+          setTimeout(() => playReferenceAudio(), 220);
+
+        } else if (state.mode === "harmony") {
+          el.rhythmPackBar.style.display = "none";
+          el.fingerboardWrapper.style.display = "block";
+          el.rhythmZone.style.display = "none";
+          el.fingerboardToggles.style.display = "flex";
+          el.bowHoldBtn.style.display = "inline-flex";
+          el.hearRefBtn.textContent = "🔊 Hear Double-Stop";
+
+          const ch = HARMONY_CHALLENGES[Math.floor(Math.random() * HARMONY_CHALLENGES.length)];
+          const droneObj = VIOLIN_STRINGS.find((s) => s.name === ch.droneStr);
+          const upperObj = VIOLIN_STRINGS.find((s) => s.name === ch.upperStr);
+          const pureFreq = droneObj.freq * ch.ratio;
+
+          state.activeString = upperObj;
+          state.droneString = droneObj;
+          state.targetCents = freqToCents(upperObj.freq, pureFreq);
+          state.targetNoteLabel = ch.targetNote;
+          state.targetFingerLabel = ch.finger;
+          state.targetIntervalLabel = ch.interval;
+          state.userCents = Math.max(40, Math.min(720, state.targetCents + (Math.random() > 0.5 ? 95 : -95)));
+
+          highlightStrings(upperObj.name, droneObj.name);
+          el.promptKicker.textContent = `ROUND ${state.round + 1} OF ${state.maxRounds} • HARMONY DOUBLE-STOPS`;
+          el.promptTitle.textContent = `Tune ${ch.targetNote} (${ch.interval}) above Open ${droneObj.name}`;
+          el.promptSub.textContent = `Bow the ${upperObj.short} string against the Open ${droneObj.name} drone until the acoustic beating stops.`;
+
+          setMaestroMood("listening", `Let's tune a pure ${ch.interval}! Play ${ch.targetNote} (${ch.finger}) against Open ${droneObj.name} until the waves lock smoothly!`);
+          updateFingerUI();
+          setTimeout(() => playReferenceAudio(), 220);
+
+        } else if (state.mode === "rhythm") {
+          el.rhythmPackBar.style.display = "flex";
+          el.fingerboardWrapper.style.display = "none";
+          el.rhythmZone.style.display = "flex";
+          el.fingerboardToggles.style.display = "none";
+          el.bowHoldBtn.style.display = "none";
+          el.hearRefBtn.textContent = "🔊 Replay Cadence";
+
+          const packObj = RHYTHM_PACKS[state.rhythmPack] || RHYTHM_PACKS.beginner;
+          const pat = packObj.patterns[state.round % packObj.patterns.length];
+          state.rhythmPattern = pat;
+          state.activeString = VIOLIN_STRINGS.find((s) => s.name === pat.rootStr) || VIOLIN_STRINGS[1];
+
+          el.promptKicker.textContent = `ROUND ${state.round + 1} OF ${state.maxRounds} • RHYTHM (${pat.level.toUpperCase()})`;
+          el.promptTitle.textContent = `${pat.title}`;
+          el.promptSub.textContent = `Notes: ${pat.summary} • Listen to Maestro Mochi, then tap & hold the Bow Pad (or Spacebar).`;
+
+          renderBowStrokeChips();
+          el.canvasReadout.textContent = `RHYTHM STROKES: 0 / ${pat.notes.length}`;
+          setMaestroMood("happy", `[${pat.level}] ${pat.title}! Watch my Down-Bow (⊓) and Up-Bow (V) strokes, then copy the rhythm on the Bow Pad!`);
+          setTimeout(() => playReferenceAudio(), 240);
+        }
+      }
+
+      function renderBowStrokeChips() {
+        el.bowStrokeStrip.innerHTML = "";
+        if (!state.rhythmPattern) return;
+        state.rhythmPattern.notes.forEach((n, idx) => {
+          const chip = document.createElement("div");
+          chip.className = "stroke-chip";
+          chip.id = `strokeChip_${idx}`;
+          chip.innerHTML = `
+            <span style="font-size: 0.95rem;">${n.bow} ${n.note}</span>
+            <span style="font-size: 0.72rem; opacity: 0.78;">${n.symbol}</span>
+          `;
+          el.bowStrokeStrip.appendChild(chip);
+        });
+      }
+
+      function playReferenceAudio() {
+        if (state.mode === "tone") {
+          const freq = centsToFreq(state.activeString.freq, state.targetCents);
+          el.canvasReadout.textContent = `🔊 PLAYING REFERENCE: ${state.targetNoteLabel}`;
+          el.mochiBowArm.classList.add("playing");
+          synth.startBowedVoice("refTone", freq, 0.28, 4);
+          setTimeout(() => {
+            synth.stopBowedVoice("refTone", 0.15);
+            el.mochiBowArm.classList.remove("playing");
+            updateFingerUI();
+          }, 1150);
+
+        } else if (state.mode === "harmony") {
+          const freq = centsToFreq(state.activeString.freq, state.targetCents);
+          el.canvasReadout.textContent = `🔊 PLAYING HARMONY: ${state.droneString.name} + ${state.targetNoteLabel}`;
+          el.mochiBowArm.classList.add("playing");
+          synth.startBowedVoice("refDrone", state.droneString.freq, 0.21, 0);
+          synth.startBowedVoice("refHarm", freq, 0.22, 2);
+          setTimeout(() => {
+            synth.stopBowedVoice("refDrone", 0.16);
+            synth.stopBowedVoice("refHarm", 0.16);
+            el.mochiBowArm.classList.remove("playing");
+            updateFingerUI();
+          }, 1450);
+
+        } else if (state.mode === "rhythm") {
+          clearRhythmTimers();
+          state.rhythmDemoRunning = true;
+          state.rhythmTaps = [];
+          state.rhythmStartMs = 0;
+          renderBowStrokeChips();
+
+          const pat = state.rhythmPattern;
+          const secPerBeat = 60 / pat.bpm;
+          el.canvasReadout.textContent = "🔊 MAESTRO MOCHI DEMONSTRATING...";
+          el.mochiBowArm.classList.add("playing");
+
+          // Two-beat count-in
+          synth.playWoodClick(true, 0);
+          synth.playWoodClick(false, secPerBeat);
+
+          const offsetSec = secPerBeat * 2;
+          pat.notes.forEach((n, idx) => {
+            const startSec = offsetSec + n.beat * secPerBeat;
+            const durSec = n.dur * secPerBeat;
+            const pitch = n.customFreq || centsToFreq(state.activeString.freq, n.semi * 100);
+            synth.playScheduledViolinNote(pitch, durSec, n.bow === "⊓", startSec);
+
+            const tOn = setTimeout(() => {
+              const chip = document.getElementById(`strokeChip_${idx}`);
+              if (chip) chip.classList.add("demo-active");
+            }, startSec * 1000);
+
+            const tOff = setTimeout(() => {
+              const chip = document.getElementById(`strokeChip_${idx}`);
+              if (chip) chip.classList.remove("demo-active");
+            }, (startSec + durSec) * 1000);
+
+            state.rhythmTimers.push(tOn, tOff);
+          });
+
+          const last = pat.notes[pat.notes.length - 1];
+          const doneMs = (offsetSec + (last.beat + last.dur) * secPerBeat + 0.18) * 1000;
+          const tDone = setTimeout(() => {
+            state.rhythmDemoRunning = false;
+            el.mochiBowArm.classList.remove("playing");
+            el.canvasReadout.textContent = `YOUR TURN • STROKES: 0 / ${pat.notes.length}`;
+            setMaestroMood("listening", "Your turn! Tap & hold the Bow Pad (or Spacebar) on Beat 1 to play the rhythm!");
+          }, doneMs);
+          state.rhythmTimers.push(tDone);
+        } else if (state.mode === "repertoire") {
+          if (state.repStage === "tune") {
+            const freq = centsToFreq(state.activeString.freq, state.targetCents);
+            el.canvasReadout.textContent = `🔊 PLAYING TARGET NOTE: ${state.targetNoteLabel}`;
+            el.mochiBowArm.classList.add("playing");
+            synth.startBowedVoice("refTone", freq, 0.28, 3.5);
+            setTimeout(() => {
+              synth.stopBowedVoice("refTone", 0.14);
+              el.mochiBowArm.classList.remove("playing");
+              updateFingerUI();
+            }, 1050);
+          } else if (state.repStage === "rhythm") {
+            clearRhythmTimers();
+            state.rhythmDemoRunning = true;
+            state.rhythmTaps = [];
+            state.rhythmStartMs = 0;
+            renderBowStrokeChips();
+
+            const pat = state.rhythmPattern;
+            const secPerBeat = 60 / pat.bpm;
+            el.canvasReadout.textContent = "🔊 PLAYING PHRASE RHYTHM...";
+            el.mochiBowArm.classList.add("playing");
+
+            synth.playWoodClick(true, 0);
+            synth.playWoodClick(false, secPerBeat);
+
+            const offsetSec = secPerBeat * 2;
+            pat.notes.forEach((n, idx) => {
+              const startSec = offsetSec + n.beat * secPerBeat;
+              const durSec = n.dur * secPerBeat;
+              const pitch = n.customFreq || centsToFreq(state.activeString.freq, n.semi * 100);
+              synth.playScheduledViolinNote(pitch, durSec, n.bow === "⊓", startSec);
+
+              const tOn = setTimeout(() => {
+                const chip = document.getElementById(`strokeChip_${idx}`);
+                if (chip) chip.classList.add("demo-active");
+              }, startSec * 1000);
+
+              const tOff = setTimeout(() => {
+                const chip = document.getElementById(`strokeChip_${idx}`);
+                if (chip) chip.classList.remove("demo-active");
+              }, (startSec + durSec) * 1000);
+
+              state.rhythmTimers.push(tOn, tOff);
+            });
+
+            const last = pat.notes[pat.notes.length - 1];
+            const doneMs = (offsetSec + (last.beat + last.dur) * secPerBeat + 0.18) * 1000;
+            const tDone = setTimeout(() => {
+              state.rhythmDemoRunning = false;
+              el.mochiBowArm.classList.remove("playing");
+              el.canvasReadout.textContent = `YOUR TURN • STROKES: 0 / ${pat.notes.length}`;
+              setMaestroMood("listening", "Your turn! Tap & hold the Bow Pad (or Spacebar) on Beat 1 to bow your tuned notes!");
+            }, doneMs);
+            state.rhythmTimers.push(tDone);
+          }
+        }
+      }
+
+      /* ========================================================================
+         5. PLAYER INPUT HANDLERS (FINGERBOARD & RHYTHM BOW PAD)
+         ======================================================================== */
+      function startPlayerBowing() {
+        if (state.isBowing) return;
+        state.isBowing = true;
+        const freq = centsToFreq(state.activeString.freq, state.userCents);
+        if (state.mode === "tone" || (state.mode === "repertoire" && state.repStage === "tune")) {
+          synth.startBowedVoice("userNote", freq, 0.28, 4.5);
+        } else if (state.mode === "harmony") {
+          synth.startBowedVoice("userDrone", state.droneString.freq, 0.21, 0);
+          synth.startBowedVoice("userNote", freq, 0.22, 2);
+        }
+        updateFingerUI();
+      }
+
+      function stopPlayerBowing() {
+        if (!state.isBowing) return;
+        state.isBowing = false;
+        synth.stopBowedVoice("userNote", 0.12);
+        synth.stopBowedVoice("userDrone", 0.12);
+        updateFingerUI();
+      }
+
+      let draggingBoard = false;
+      function updateBoardFromClientX(clientX) {
+        const rect = el.fingerboardWrapper.getBoundingClientRect();
+        const pct = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+        state.userCents = boardPctToCents(pct);
+        updateFingerUI();
+      }
+
+      el.fingerboardWrapper.addEventListener("pointerdown", (e) => {
+        draggingBoard = true;
+        el.fingerboardWrapper.setPointerCapture(e.pointerId);
+        updateBoardFromClientX(e.clientX);
+        startPlayerBowing();
+      });
+
+      el.fingerboardWrapper.addEventListener("pointermove", (e) => {
+        if (!draggingBoard) return;
+        updateBoardFromClientX(e.clientX);
+      });
+
+      el.fingerboardWrapper.addEventListener("pointerup", () => {
+        draggingBoard = false;
+        stopPlayerBowing();
+      });
+
+      el.fingerboardWrapper.addEventListener("pointercancel", () => {
+        draggingBoard = false;
+        stopPlayerBowing();
+      });
+
+      el.bowHoldBtn.addEventListener("pointerdown", startPlayerBowing);
+      el.bowHoldBtn.addEventListener("pointerup", stopPlayerBowing);
+      el.bowHoldBtn.addEventListener("pointerleave", stopPlayerBowing);
+
+      // Rhythm Bow Pad Handlers
+      function handleRhythmDown() {
+        if (state.roundLocked || state.rhythmDemoRunning || state.activeTapStartMs !== 0) return;
+        const now = performance.now();
+        if (state.rhythmStartMs === 0) state.rhythmStartMs = now;
+        state.activeTapStartMs = now;
+
+        el.bowTapPad.classList.add("pressed");
+        el.mochiBowArm.classList.add("playing");
+
+        const idx = state.rhythmTaps.length;
+        const expected = state.rhythmPattern.notes[idx];
+        const semi = expected ? expected.semi : 0;
+        const pitch = expected && expected.customFreq ? expected.customFreq : centsToFreq(state.activeString.freq, semi * 100);
+        synth.startBowedVoice("rhythmLive", pitch, 0.28, 1.5);
+        spawnParticles(5);
+
+        const chip = document.getElementById(`strokeChip_${idx}`);
+        if (chip) chip.classList.add("user-hit");
+      }
+
+      function handleRhythmUp() {
+        if (state.activeTapStartMs === 0) return;
+        const now = performance.now();
+        const startSec = (state.activeTapStartMs - state.rhythmStartMs) / 1000;
+        const durSec = Math.max(0.05, (now - state.activeTapStartMs) / 1000);
+        state.activeTapStartMs = 0;
+
+        el.bowTapPad.classList.remove("pressed");
+        el.mochiBowArm.classList.remove("playing");
+        synth.stopBowedVoice("rhythmLive", 0.08);
+
+        state.rhythmTaps.push({ startSec, durSec });
+        el.canvasReadout.textContent = `STROKES RECORDED: ${state.rhythmTaps.length} / ${state.rhythmPattern.notes.length}`;
+
+        if (state.rhythmTaps.length >= state.rhythmPattern.notes.length) {
+          if (state.mode === "repertoire") {
+            setTimeout(() => evaluateRepertoirePhraseRhythm(), 160);
+          } else {
+            setTimeout(() => evaluateRound(), 160);
+          }
+        }
+      }
+
+      el.bowTapPad.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        el.bowTapPad.setPointerCapture(e.pointerId);
+        handleRhythmDown();
+      });
+      el.bowTapPad.addEventListener("pointerup", handleRhythmUp);
+      el.bowTapPad.addEventListener("pointercancel", handleRhythmUp);
+
+      /* ========================================================================
+         6. SCORING & RECITAL SUMMARY
+         ======================================================================== */
+      function evaluateRound() {
+        if (state.mode === "repertoire") {
+          if (state.repStage === "tune") {
+            handleRepertoireToneLockIn();
+          }
+          return;
+        }
+        if (state.roundLocked) return;
+        state.roundLocked = true;
+        stopPlayerBowing();
+        el.guideGhostPin.style.display = "none";
+
+        let accuracy = 0;
+        let headline = "";
+        let detail = "";
+        let taskSummary = "";
+        let correctSpec = "";
+        let userSpec = "";
+        let coachNote = "";
+
+        if (state.mode === "tone" || state.mode === "harmony") {
+          const diffCents = state.userCents - state.targetCents;
+          const absCents = Math.abs(diffCents);
+          accuracy = Math.max(0, Math.round(100 * Math.exp(-Math.pow(absCents / 24, 2))));
+
+          el.targetRevealPin.style.left = `${centsToBoardPct(state.targetCents)}%`;
+          el.targetRevealPin.style.display = "block";
+
+          const playedInfo = getNoteInfoAtCents(state.activeString, state.userCents);
+          const playedSign = playedInfo.centOffset > 0 ? "+" : "";
+
+          const tier = absCents <= 6 ? "Perfect!" : absCents <= 16 ? "Great!" : absCents <= 32 ? "Close!" : "Out of Tune";
+          const offsetDesc =
+            absCents < 2
+              ? `Dead center on ${state.targetNoteLabel} (${state.targetFingerLabel})`
+              : diffCents > 0
+              ? `${diffCents.toFixed(0)}¢ sharp of ${state.targetNoteLabel} (${state.targetFingerLabel})`
+              : `${Math.abs(diffCents).toFixed(0)}¢ flat of ${state.targetNoteLabel} (${state.targetFingerLabel})`;
+
+          headline = `${tier} (${accuracy}% Intonation)`;
+          detail = offsetDesc;
+
+          if (state.mode === "tone") {
+            taskSummary = `Tone: ${state.targetNoteLabel} on ${state.activeString.short} String`;
+            correctSpec = `${state.targetNoteLabel} (${state.targetFingerLabel} on ${state.activeString.short} string)`;
+            userSpec = `${playedInfo.noteName} (${playedSign}${playedInfo.centOffset}¢) • ${absCents < 2 ? "0¢ off target" : `${Math.round(absCents)}¢ ${diffCents > 0 ? "sharp" : "flat"}`}`;
+            coachNote = absCents <= 8
+              ? "Spot-on finger placement and steady bow tone!"
+              : diffCents > 0
+              ? `Slide your finger slightly back toward the ivory nut by ${Math.round(absCents)} cents.`
+              : `Slide your finger slightly higher up the ${state.activeString.short} string by ${Math.round(absCents)} cents.`;
+          } else {
+            taskSummary = `Harmony: ${state.targetIntervalLabel} (${state.targetNoteLabel} + Open ${state.droneString.name})`;
+            correctSpec = `${state.targetNoteLabel} (${state.targetFingerLabel}) for pure ${state.targetIntervalLabel} above Open ${state.droneString.name}`;
+            userSpec = `${playedInfo.noteName} (${playedSign}${playedInfo.centOffset}¢) • ${absCents < 2 ? "Pure consonance (0¢ off)" : `${Math.round(absCents)}¢ ${diffCents > 0 ? "wide/sharp" : "narrow/flat"}`}`;
+            coachNote = absCents <= 8
+              ? "Zero acoustic beating—your double-stop rang with pure resonance!"
+              : "Listen for the slow 'wah-wah' beating between the two strings and adjust until it disappears.";
+          }
+        } else {
+          const pat = state.rhythmPattern;
+          const secPerBeat = 60 / pat.bpm;
+          let sum = 0;
+          let totalTimingMs = 0;
+          let totalDurMs = 0;
+          let counted = 0;
+
+          pat.notes.forEach((exp, i) => {
+            const tap = state.rhythmTaps[i];
+            if (!tap) return;
+            const expStart = exp.beat * secPerBeat;
+            const expDur = exp.dur * secPerBeat;
+            const onsetErr = Math.abs(tap.startSec - expStart);
+            const durErr = Math.abs(tap.durSec - expDur);
+            totalTimingMs += Math.round(onsetErr * 1000);
+            totalDurMs += Math.round(durErr * 1000);
+            counted += 1;
+
+            const onsetScore = Math.max(0, 1 - onsetErr / 0.34);
+            const durScore = Math.max(0, 1 - durErr / 0.42);
+            sum += onsetScore * 0.68 + durScore * 0.32;
+          });
+
+          accuracy = Math.max(0, Math.min(100, Math.round((sum / pat.notes.length) * 100)));
+          const avgTimingMs = counted > 0 ? Math.round(totalTimingMs / counted) : 0;
+          const avgDurMs = counted > 0 ? Math.round(totalDurMs / counted) : 0;
+
+          headline = accuracy >= 88 ? "Crisp Bowing Cadence!" : accuracy >= 65 ? "Nice Rhythmic Groove!" : "Keep Counting the Pulse!";
+          detail = `Timing & Bow Duration Match: ${accuracy}%`;
+
+          taskSummary = `${pat.title} [${pat.level}]`;
+          correctSpec = `${pat.notes.length} bow strokes (${pat.summary}) at ${pat.bpm} BPM`;
+          userSpec = `${state.rhythmTaps.length}/${pat.notes.length} strokes played • Avg onset offset: ${avgTimingMs}ms • Avg bow-hold offset: ${avgDurMs}ms`;
+          coachNote = accuracy >= 85
+            ? "Clean bow changes and accurate note lengths!"
+            : avgTimingMs > avgDurMs
+            ? "Focus on locking your first Down-Bow right onto Beat 1 after the two count-in clicks."
+            : "Hold your long notes (♩. and 𝅗𝅥) for their full bow length before lifting.";
+        }
+
+        const pts = accuracy * 10;
+        state.score += pts;
+
+        let rating = "miss";
+        let emoji = "🍓";
+        if (accuracy >= 85) {
+          rating = "perfect";
+          emoji = "🌟";
+          state.streak += 1;
+          spawnParticles(20);
+          setMaestroMood("cheering", `Bravo!! Pure golden resonance! Your ${state.mode === "rhythm" ? "bowing cadence" : state.targetNoteLabel} sang like a Stradivarius!`, true);
+        } else if (accuracy >= 60) {
+          rating = "good";
+          emoji = "🌸";
+          state.streak += 1;
+          spawnParticles(10);
+          setMaestroMood("happy", `Lovely work! ${state.mode === "rhythm" ? "Your pulse is steadying nicely!" : `Check the green dot on the ${state.activeString.short} string—your ear is sharpening fast!`}`, true);
+        } else {
+          state.streak = 0;
+          setMaestroMood("thinking", `Good try! ${state.mode === "rhythm" ? "Replay the cadence and count along with the two clicks." : `Compare your finger position with the green target dot on the ${state.activeString.short} string!`}`, true);
+        }
+
+        state.results.push({
+          roundNum: state.round + 1,
+          accuracy,
+          pts,
+          rating,
+          emoji,
+          taskSummary,
+          correctSpec,
+          userSpec,
+          coachNote
+        });
+
+        el.scoreDisplay.textContent = state.score;
+        el.streakDisplay.textContent = state.streak;
+
+        el.resultHeadline.textContent = headline;
+        el.resultDetail.textContent = detail;
+        el.resultPoints.textContent = `+${pts}`;
+        el.resultBanner.classList.toggle("warn", accuracy < 70);
+        el.resultBanner.classList.add("visible");
+
+        el.lockInBtn.style.display = "none";
+        el.nextRoundBtn.style.display = "inline-flex";
+        el.nextRoundBtn.textContent = state.round + 1 >= state.maxRounds ? "Finish Recital ★" : "Next Round →";
+        renderRoundDots();
+      }
+
+      function buildScorecardPlainText() {
+        const modeTitles = {
+          tone: "Tone & Fingerboard Positioning",
+          harmony: "Harmony Double-Stops",
+          rhythm: `Rhythm — ${(RHYTHM_PACKS[state.rhythmPack] || RHYTHM_PACKS.beginner).label}`
+        };
+        const avg = Math.round(state.results.reduce((acc, r) => acc + r.accuracy, 0) / state.maxRounds);
+        const breakdown = state.results.map((r) => `R${r.roundNum}: ${r.accuracy}%`).join(" | ");
+
+        return (
+          `Maestro Mochi's Violin Studio — Recital Scorecard\n` +
+          `Section: ${modeTitles[state.mode]}\n` +
+          `${breakdown}\n` +
+          `Average Accuracy: ${avg}% | Score: ${state.score} | Best Streak: ${state.streak}`
+        );
+      }
+
+      function showRecitalSummary() {
+        const modeTitles = {
+          tone: "Tone & Fingerboard Positioning",
+          harmony: "Harmony Double-Stops",
+          rhythm: `Rhythm (${(RHYTHM_PACKS[state.rhythmPack] || RHYTHM_PACKS.beginner).label})`
+        };
+        const avg = Math.round(state.results.reduce((acc, r) => acc + r.accuracy, 0) / state.maxRounds);
+
+        el.recitalScorecardText.textContent = buildScorecardPlainText();
+        el.summarySubtitle.textContent = `You averaged ${avg}% across 5 rounds of ${modeTitles[state.mode]}.`;
+        el.summaryModal.classList.add("open");
+        setMaestroMood("cheering", "Standing ovation! Copy your scorecard or click Okay to review a detailed comparison of every round!", true);
+      }
+
+      function showDetailedReportScreen() {
+        el.summaryModal.classList.remove("open");
+        el.activePracticeArea.style.display = "none";
+        el.reportScreen.classList.add("visible");
+
+        const modeTitles = {
+          tone: "Tone & Fingerboard Positioning",
+          harmony: "Harmony Double-Stops",
+          rhythm: `Rhythm — ${(RHYTHM_PACKS[state.rhythmPack] || RHYTHM_PACKS.beginner).label}`
+        };
+        const avg = Math.round(state.results.reduce((acc, r) => acc + r.accuracy, 0) / state.maxRounds);
+
+        el.reportMainTitle.textContent = `${modeTitles[state.mode]} — Performance Report`;
+        el.reportSummaryChips.innerHTML = `
+          <div class="report-chip">Average: ${avg}%</div>
+          <div class="report-chip">Total Score: ${state.score}</div>
+          <div class="report-chip">Best Streak: ${state.streak}</div>
+        `;
+
+        el.reportList.innerHTML = "";
+        state.results.forEach((r) => {
+          const item = document.createElement("div");
+          item.className = "report-item";
+          item.innerHTML = `
+            <div class="report-item-top">
+              <strong style="font-size: 0.94rem; color: var(--ink-dark);">Round ${r.roundNum}: ${r.taskSummary}</strong>
+              <span class="report-badge ${r.rating}">${r.accuracy}% Match (+${r.pts} pts)</span>
+            </div>
+            <div class="report-compare-grid">
+              <div class="compare-box">
+                <span class="compare-label">Correct Target</span>
+                <strong>${r.correctSpec}</strong>
+              </div>
+              <div class="compare-box">
+                <span class="compare-label">What You Played</span>
+                <strong>${r.userSpec}</strong>
+              </div>
+            </div>
+            <div class="report-tip">Maestro Mochi's Note: ${r.coachNote}</div>
+          `;
+          el.reportList.appendChild(item);
+        });
+
+        setMaestroMood("happy", "Here is your task-by-task breakdown comparing what you played with the correct target! Click Start New Recital whenever you are ready.");
+      }
+
+      function resetRecital(newMode = state.mode) {
+        state.mode = newMode;
+        state.round = 0;
+        state.score = 0;
+        state.streak = 0;
+        state.results = [];
+        el.scoreDisplay.textContent = "0";
+        el.streakDisplay.textContent = "0";
+        el.summaryModal.classList.remove("open");
+
+        document.querySelectorAll(".mode-tab").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.mode === newMode);
+        });
+
+        setupRound();
+      }
+
+      /* ========================================================================
+         7. ACOUSTIC WAVEFORM CANVAS RENDER LOOP
+         ======================================================================== */
+      let animPhase = 0;
+      function resizeCanvas() {
+        const rect = el.canvas.parentElement.getBoundingClientRect();
+        el.canvas.width = Math.max(300, Math.floor(rect.width));
+        el.canvas.height = Math.max(90, Math.floor(rect.height));
+      }
+
+      function renderCanvas() {
+        const w = el.canvas.width;
+        const h = el.canvas.height;
+        const midY = h / 2;
+        ctx.clearRect(0, 0, w, h);
+
+        // Subtle gold center guideline
+        ctx.strokeStyle = "rgba(229, 185, 92, 0.22)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, midY);
+        ctx.lineTo(w, midY);
+        ctx.stroke();
+
+        animPhase += 0.08;
+
+        if (state.mode === "rhythm" || (state.mode === "repertoire" && state.repStage === "rhythm")) {
+          // Animated bow hair ribbon pulse
+          ctx.beginPath();
+          for (let x = 0; x <= w; x += 4) {
+            const norm = x / w;
+            const amp = state.activeTapStartMs !== 0 || state.rhythmDemoRunning ? 26 : 6;
+            const y = midY + Math.sin(norm * 14 + animPhase * 1.4) * amp * Math.sin(Math.PI * norm);
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle = state.activeTapStartMs !== 0 ? "#FF9EBB" : "#E5B95C";
+          ctx.lineWidth = 3.2;
+          ctx.stroke();
+        } else {
+          // Tone & Harmony: Real-time acoustic wave interference / beating
+          const centsDiff = state.userCents - state.targetCents;
+          const consonance = Math.exp(-Math.pow(centsDiff / 18, 2));
+          const beatFreq = Math.abs(centsDiff) * 0.04;
+
+          // Target standing wave
+          ctx.beginPath();
+          for (let x = 0; x <= w; x += 3) {
+            const norm = x / w;
+            const env = Math.sin(Math.PI * norm);
+            const y = midY + Math.sin(norm * 18 + animPhase * 0.7) * 28 * env;
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle = "rgba(255, 249, 239, 0.45)";
+          ctx.lineWidth = 2.2;
+          ctx.stroke();
+
+          // Player's bowed string wave (wobbles when out of tune, locks smoothly when in tune)
+          ctx.beginPath();
+          for (let x = 0; x <= w; x += 3) {
+            const norm = x / w;
+            const env = Math.sin(Math.PI * norm);
+            const wobble = 1 - (1 - consonance) * 0.48 * Math.sin(norm * 9 - animPhase * beatFreq);
+            const amp = state.isBowing ? 36 : 15;
+            const y = midY + Math.sin(norm * (18 + centsDiff * 0.05) + animPhase) * amp * env * wobble;
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle = state.roundLocked ? "#34D399" : "#FF8FA3";
+          ctx.lineWidth = state.isBowing ? 3.8 : 2.6;
+          ctx.stroke();
+        }
+
+        // Render floating musical note & blossom particles
+        ctx.font = "14px system-ui, sans-serif";
+        for (let i = state.particles.length - 1; i >= 0; i--) {
+          const p = state.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= 0.015;
+          if (p.alpha <= 0) {
+            state.particles.splice(i, 1);
+            continue;
+          }
+          ctx.fillStyle = `rgba(255, 236, 179, ${p.alpha})`;
+          ctx.fillText(p.glyph, p.x, p.y);
+        }
+
+        requestAnimationFrame(renderCanvas);
+      }
+
+      /* ========================================================================
+         8. UI EVENT LISTENERS & KEYBOARD SHORTCUTS
+         ======================================================================== */
+      document.querySelectorAll(".mode-tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          resetRecital(tab.dataset.mode);
+        });
+      });
+
+      document.querySelectorAll(".pack-pill").forEach((pill) => {
+        pill.addEventListener("click", () => {
+          state.rhythmPack = pill.dataset.pack;
+          document.querySelectorAll(".pack-pill").forEach((p) => {
+            p.classList.toggle("active", p.dataset.pack === state.rhythmPack);
+          });
+          if (state.mode === "repertoire") {
+            startRepertoireSession(true);
+          } else {
+            resetRecital("rhythm");
+          }
+        });
+      });
+
+      el.repSongSelect.addEventListener("change", () => {
+        state.repSongIndex = parseInt(el.repSongSelect.value, 10) || 0;
+        startRepertoireSession(false);
+      });
+
+      el.repPlayUserBtn.addEventListener("click", () => playFullRepertoireComparison(true));
+      el.repPlayIdealBtn.addEventListener("click", () => playFullRepertoireComparison(false));
+      el.repNextSongBtn.addEventListener("click", () => {
+        const list = REPERTOIRE_PACKS[state.rhythmPack] || REPERTOIRE_PACKS.beginner;
+        state.repSongIndex = (state.repSongIndex + 1) % list.length;
+        startRepertoireSession(false);
+      });
+
+      el.tapesToggleBtn.addEventListener("click", () => {
+        state.showTapes = !state.showTapes;
+        el.fingerTapes.classList.toggle("hidden", !state.showTapes);
+        el.tapesToggleBtn.classList.toggle("active-toggle", state.showTapes);
+        el.tapesToggleBtn.textContent = state.showTapes ? "Finger Tapes: ON" : "Finger Tapes: OFF";
+      });
+
+      el.guideDotToggleBtn.addEventListener("click", () => {
+        state.showGuideDot = !state.showGuideDot;
+        el.guideDotToggleBtn.classList.toggle("active-toggle", state.showGuideDot);
+        el.guideDotToggleBtn.textContent = state.showGuideDot ? "Guide Dot: ON" : "Guide Dot: OFF";
+        updateFingerUI();
+      });
+
+      el.muteBtn.addEventListener("click", () => {
+        const nextMuted = !synth.muted;
+        synth.setMuted(nextMuted);
+        el.muteBtn.textContent = nextMuted ? "🔇 Sound: OFF" : "🔊 Sound: ON";
+      });
+
+      el.hearRefBtn.addEventListener("click", playReferenceAudio);
+      el.lockInBtn.addEventListener("click", evaluateRound);
+
+      el.nextRoundBtn.addEventListener("click", () => {
+        if (state.mode === "repertoire") {
+          if (state.repPhraseIndex + 1 >= 3) {
+            showRepertoireFinale();
+          } else {
+            state.repPhraseIndex += 1;
+            state.repStage = "tune";
+            state.repNoteIndex = 0;
+            state.repTunedNotes = [];
+            setupRepertoireStep();
+          }
+          return;
+        }
+        if (state.round + 1 >= state.maxRounds) {
+          showRecitalSummary();
+        } else {
+          state.round += 1;
+          setupRound();
+        }
+      });
+
+      el.restartRecitalBtn.addEventListener("click", () => resetRecital(state.mode));
+      el.okayModalBtn.addEventListener("click", showDetailedReportScreen);
+      el.reportNewRecitalBtn.addEventListener("click", () => resetRecital(state.mode));
+
+      function copyScorecardToClipboard(buttonEl, defaultLabel) {
+        const text = buildScorecardPlainText();
+        const tempArea = document.createElement("textarea");
+        tempArea.value = text;
+        document.body.appendChild(tempArea);
+        tempArea.select();
+        try {
+          document.execCommand("copy");
+          buttonEl.textContent = "Copied!";
+          setTimeout(() => {
+            buttonEl.textContent = defaultLabel;
+          }, 1800);
+        } catch (_) {}
+        document.body.removeChild(tempArea);
+      }
+
+      el.copyScorecardBtn.addEventListener("click", () => {
+        copyScorecardToClipboard(el.copyScorecardBtn, "Copy Scorecard");
+      });
+
+      el.reportCopyBtn.addEventListener("click", () => {
+        copyScorecardToClipboard(el.reportCopyBtn, "Copy Scorecard");
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if (e.repeat) return;
+        const isRhythmInput = state.mode === "rhythm" || (state.mode === "repertoire" && state.repStage === "rhythm");
+        const isFingerboardInput = state.mode === "tone" || state.mode === "harmony" || (state.mode === "repertoire" && state.repStage === "tune");
+        if (e.code === "Space") {
+          if (isRhythmInput) {
+            e.preventDefault();
+            handleRhythmDown();
+          } else if (isFingerboardInput) {
+            e.preventDefault();
+            startPlayerBowing();
+          }
+        } else if (e.code === "ArrowLeft" && isFingerboardInput) {
+          e.preventDefault();
+          state.userCents = Math.max(0, state.userCents - 3);
+          updateFingerUI();
+        } else if (e.code === "ArrowRight" && isFingerboardInput) {
+          e.preventDefault();
+          state.userCents = Math.min(750, state.userCents + 3);
+          updateFingerUI();
+        } else if (e.code === "Enter") {
+          e.preventDefault();
+          if (!state.roundLocked && el.lockInBtn.style.display !== "none") {
+            evaluateRound();
+          } else if (el.nextRoundBtn.style.display !== "none") {
+            el.nextRoundBtn.click();
+          }
+        }
+      });
+
+      window.addEventListener("keyup", (e) => {
+        if (e.code === "Space") {
+          if (state.mode === "rhythm" || (state.mode === "repertoire" && state.repStage === "rhythm")) {
+            handleRhythmUp();
+          } else {
+            stopPlayerBowing();
+          }
+        }
+      });
+
+      window.addEventListener("resize", resizeCanvas);
+
+      // Unlock Web Audio API reliably on every user gesture until running (handles iframe/iOS policies)
+      let initialRefPlayed = false;
+      function unlockAudioOnGesture() {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+
+        if (!synth.ctx) {
+          synth.ctx = new AudioCtx();
+          synth.master = synth.ctx.createGain();
+          synth.master.gain.value = synth.muted ? 0 : 0.72;
+          synth.master.connect(synth.ctx.destination);
+        }
+
+        const triggerIfReady = () => {
+          if (!initialRefPlayed && !state.roundLocked && !state.isBowing && !state.rhythmDemoRunning) {
+            initialRefPlayed = true;
+            playReferenceAudio();
+          }
+        };
+
+        if (synth.ctx.state !== "running") {
+          synth.ctx.resume().then(triggerIfReady).catch(() => {});
+        } else {
+          triggerIfReady();
+        }
+      }
+
+      ["pointerdown", "mousedown", "touchstart", "click", "keydown"].forEach((evtName) => {
+        window.addEventListener(evtName, unlockAudioOnGesture, { capture: true, passive: true });
+      });
+
+      // Initialize immediately on load
+      resizeCanvas();
+      renderCanvas();
+      resetRecital("tone");
+    })();
+  </script>
+</body>
+</html>
